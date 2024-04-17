@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-ApiApplication<API>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.ingesoft.api.ApiApplication",
+      "projectName": "API",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
