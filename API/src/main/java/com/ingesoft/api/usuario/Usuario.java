@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table
-
 public class Usuario implements UserDetails {
 
     @Id
