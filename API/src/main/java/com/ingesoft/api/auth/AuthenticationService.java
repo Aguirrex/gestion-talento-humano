@@ -5,6 +5,7 @@ import com.ingesoft.api.usuario.Tipo;
 import com.ingesoft.api.usuario.Usuario;
 import com.ingesoft.api.usuario.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,8 +52,6 @@ public class AuthenticationService {
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
 
-
-
         return AuthenticationResponse.builder()
                 .message("OK")
                 .usuario(AuthenticationUsuarioResponse.builder()
@@ -60,6 +59,19 @@ public class AuthenticationService {
                         .tipo(user.getTipo().name())
                         .build())
                 .token(jwtToken)
+                .build();
+    }
+
+    public AuthenticationTokenResponse authenticateToken(HttpHeaders headers){
+        String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        final String jwt = authHeader.substring(7);
+        var user = jwtService.getUser(jwt);
+        return AuthenticationTokenResponse.builder()
+                .message("OK")
+                .usuario(AuthenticationUsuarioResponse.builder()
+                        .dni(user.getDni())
+                        .tipo(user.getTipo().name())
+                        .build())
                 .build();
     }
 }
