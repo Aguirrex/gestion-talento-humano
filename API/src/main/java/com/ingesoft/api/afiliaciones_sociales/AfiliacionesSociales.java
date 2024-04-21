@@ -3,6 +3,7 @@ package com.ingesoft.api.afiliaciones_sociales;
 import com.ingesoft.api.tipos_afiliaciones.TiposAfiliaciones;
 
 import jakarta.persistence.*;
+import com.ingesoft.api.contratos_personas.ContratosPersonas;
 
 @Entity
 @Table(name = "afiliaciones_sociales")
@@ -12,8 +13,9 @@ public class AfiliacionesSociales {
     @Column(columnDefinition = "BIGINT UNSIGNED")
     private Long id;
 
-    @Column(name = "id_contrato", columnDefinition = "BIGINT UNSIGNED", nullable = false)
-    private Long idContrato;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_contrato", nullable = false)
+    private ContratosPersonas idContrato;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_afiliacion", nullable = false)

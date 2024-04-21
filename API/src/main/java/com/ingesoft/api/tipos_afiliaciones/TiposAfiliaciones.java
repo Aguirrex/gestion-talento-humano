@@ -13,10 +13,10 @@ public class TiposAfiliaciones {
     @Column(length = 100, nullable = false)
     private String nombre;
 
-    @Column(precision = 3, scale = 1)
+    @Column(precision = 3, scale = 1, nullable = true)
     private BigDecimal porcentajeDescuento;
 
-    @Column(precision = 11, scale = 2)
+    @Column(precision = 11, scale = 2, nullable = true)
     private BigDecimal valorDescuento;
 
     @Column(nullable = false)
