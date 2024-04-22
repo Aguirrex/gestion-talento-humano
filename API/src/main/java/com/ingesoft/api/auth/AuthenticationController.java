@@ -1,5 +1,6 @@
 package com.ingesoft.api.auth;
 
+import com.ingesoft.api.common.BadRequestsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(service.authenticate(request));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(AuthenticationUnauthorizedResponse.builder().message("ERR_USUARIO_DATA").build());
+                    .body(BadRequestsResponse.builder().message("ERR_USUARIO_DATA").build());
         }
     }
 
@@ -40,7 +41,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(service.authenticateToken(headers));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(AuthenticationUnauthorizedResponse.builder().message("ERR_TOKEN").build());
+                    .body(BadRequestsResponse.builder().message("ERR_TOKEN").build());
         }
     }
 }

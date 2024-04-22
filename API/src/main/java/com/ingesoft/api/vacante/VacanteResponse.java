@@ -1,4 +1,4 @@
-package com.ingesoft.api.auth;
+package com.ingesoft.api.vacante;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationUnauthorizedResponse {
-        private String message;
+public class VacanteResponse {
+
+    private String message;
+    private VacanteObjectResponse vacante;
 }
