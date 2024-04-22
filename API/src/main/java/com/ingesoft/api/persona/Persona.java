@@ -1,6 +1,5 @@
 package com.ingesoft.api.persona;
 
-
 import jakarta.persistence.*;
 
 @Entity
