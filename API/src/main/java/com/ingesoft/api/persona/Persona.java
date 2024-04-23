@@ -1,22 +1,35 @@
 package com.ingesoft.api.persona;
 
+import com.ingesoft.api.documentos_persona.DocumentosPersona;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table
+@Table(name = "personas")
 public class Persona {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "BIGINT UNSIGNED")
+    @Column(name = "id", columnDefinition = "BIGINT UNSIGNED")
     private Long id;
+
+    @OneToOne(mappedBy = "persona",cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private DocumentosPersona documentosPersona;
 
     @Column(unique = true, length = 15, nullable = false)
     private String dni;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TipoDocumento tipoDocumento;
+    private Tipo tipo;
 
     @Column(length = 50, nullable = false)
     private String nombre1;
