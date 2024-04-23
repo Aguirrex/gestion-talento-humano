@@ -1,4 +1,4 @@
-package com.ingesoft.api.cargo;
+package com.ingesoft.api.sucursal;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "cargos")
-public class Cargo {
+@Table(name = "sucursales")
+public class Sucursal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,6 +21,6 @@ public class Cargo {
     @Column(length = 100, nullable = false)
     private String nombre;
 
-    @Column(length = 255, nullable = false)
-    private String descripcion;
+    @Column(nullable = false)
+    private Boolean estado;
 }
