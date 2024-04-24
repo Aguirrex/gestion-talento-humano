@@ -3,6 +3,8 @@ import { useUsuarioContext } from '../../customHooks/UsuarioProvider';
 import { useNavigate } from 'react-router-dom';
 import { fetchApi, getTokenUsuario, setTokenUsuario } from '../../tools/connectionApi';
 
+const MODE = process.env.REACT_APP_MODE;
+
 const AuthUsuario = ({ children, tipoUsuario }) => {
 
   const { usuario, setUsuario } = useUsuarioContext();
@@ -30,7 +32,12 @@ const AuthUsuario = ({ children, tipoUsuario }) => {
       }
     };
 
-    auth();
+    if (MODE === 'development') {
+      setUsuario({ dni: '12345', tipo: 'RH' });
+      console.log('Usuario autenticado');
+    } else {
+      auth();
+    }
   }, []);
 
   
