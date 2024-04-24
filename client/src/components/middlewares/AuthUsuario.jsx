@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { fetchApi, getTokenUsuario, setTokenUsuario } from '../../tools/connectionApi';
 
 const AuthUsuario = ({ children, tipoUsuario }) => {
-  const { usuario, setUsuario } = useUsuarioContext();
 
+  const { usuario, setUsuario } = useUsuarioContext();
   const navigate = useNavigate();
 
   React.useEffect(() => {
