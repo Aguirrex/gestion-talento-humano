@@ -35,7 +35,7 @@ const Login = () => {
     }),
     onSubmit: (inputs) => {
       // setCargando(true);
-      fetchApi().post('/login', {
+      fetchApi().post('/auth/login', {
         data: {
           dni: inputs.dni,
           password: inputs.password

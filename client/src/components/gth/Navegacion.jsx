@@ -8,23 +8,8 @@ import { useUsuarioContext } from '../../customHooks/UsuarioProvider';
 import { setTokenUsuario } from '../../tools/connectionApi';
 
 import logo from '../../assets/logo.png';
+import { opcionesMenuLateral } from '../common/constantes';
 
-
-const opcionesMenuLateral = [
-  {icono: HailIcon, texto: 'Selección', children: [
-    {icono: HailIcon, texto: 'Vacantes', ruta: '/gth/seleccion/vacantes'},
-    {icono: HailIcon, texto: 'Candidatos', ruta: '/gth/seleccion/candidatos'},
-    {icono: HailIcon, texto: 'Entrevistas', ruta: '/gth/seleccion/entrevistas'},
-  ]},
-  {icono: HailIcon, texto: 'Empleados', usuarios: ['RH'], children: [
-    {icono: HailIcon, texto: 'Listado', ruta: '/gth/empleados/listado'},
-    {icono: HailIcon, texto: 'Contratos', ruta: '/gth/empleados/contratos'},
-    {icono: HailIcon, texto: 'Novedades', ruta: '/gth/empleados/novedades'},
-  ]},
-  {icono: HailIcon, texto: 'Nómina', ruta: '/gth/nomina'},
-  {icono: HailIcon, texto: 'Liquidación', ruta: '/gth/liquidacion'},
-  {icono: HailIcon, texto: 'Certificados', ruta: '/gth/certificados'},
-];
 
 var menuLateralInicial = {};
 
@@ -83,7 +68,7 @@ const Navegacion = () => {
 
           <Stack direction='row' sx={{ ml: 'auto' }}>
             <Button 
-              variant='text' 
+              variant='contained' 
               size='small' 
               color='primary'
               onClick={cerrarSesion}>
@@ -98,14 +83,12 @@ const Navegacion = () => {
       <Box
         sx={{ 
           display: 'flex', 
-          height: `calc(99vh - ${refBarraSuperior.current?.clientHeight}px)`,
-          overflowX: 'auto' }}>
+          height: `calc(99vh - ${refBarraSuperior.current?.clientHeight}px)` }}>
 
         <List
           component='nav'
           sx={{ 
-            width: '100%', 
-            maxWidth: '300px', 
+            width: '300px', 
             display: { xs: 'none', md: 'block' }, 
             height: '100%',
             bgcolor: 'background.paper',
@@ -113,7 +96,8 @@ const Navegacion = () => {
 
           {opcionesMenuLateral.map((opcion, index) => (opcion?.usuarios === undefined || opcion.usuarios.includes(usuario.tipo)) && (
             <React.Fragment key={index}>
-              <ListItemButton onClick={() => setMenuLateral({ ...menuLateralInicial, [index]: !menuLateral?.[index] })}>
+              <ListItemButton onClick={
+                opcion.children ? () => setMenuLateral({ ...menuLateralInicial, [index]: !menuLateral?.[index] }) : () => navigate(opcion.ruta)}>
                 <ListItemIcon>
                   <HailIcon />
                 </ListItemIcon>
@@ -124,10 +108,10 @@ const Navegacion = () => {
                   </ListItemIcon>
                 )}
               </ListItemButton>
-              {opcion.children && (
+              {opcion.children && opcion.children.some(subOpcion => subOpcion?.usuarios === undefined || subOpcion.usuarios.includes(usuario.tipo)) && (
                 <Collapse in={menuLateral?.[index]} timeout='auto' unmountOnExit>
                   <List component='div' dense disablePadding>
-                    {opcion.children.map((subOpcion, subIndex) => (
+                    {opcion.children.map((subOpcion, subIndex) => (subOpcion?.usuarios === undefined || subOpcion.usuarios.includes(usuario.tipo)) && (
                       <ListItemButton key={subIndex} component={LinkCustom} to={subOpcion.ruta} sx={{ pl: 4 }}>
                         <ListItemIcon>
                           <HailIcon />
