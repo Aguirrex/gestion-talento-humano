@@ -115,13 +115,13 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
       resultado = onEditar(filaActual);
     }
 
-    resultado = true;
-
-    if (resultado) {
-      setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.View } });
-    } else {
-      setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.Edit } });
-    }
+    resultado.then((res) => {
+      if (res) {
+        setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.View } });
+      } else {
+        setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.Edit } });
+      }
+    });
   };
 
   const manejarClickCancelar = ({ row: filaActual }) => () => {
@@ -143,10 +143,10 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
     const { id } = filaEliminar.current;
     let resultado = false;
     resultado = onEliminar(filaEliminar.current);
-    resultado = true;
-    if (resultado) {
+    resultado.then((res) => {
+      if (!res) return;
       setDatos(datos.filter((fila) => fila.id !== id));
-    }
+    });
     filaEliminar.current = null;
   };
 
@@ -162,6 +162,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
     
 
   const manejarEditStop = (params, event) => {
+    console.log(params.reason);
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
@@ -261,7 +262,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
       />
       <AlertaConfirmacion
         titulo='Eliminar registro'
-        mensaje='¿Está seguro que desea eliminar el registro?'
+        mensaje='¿Está seguro que desea eliminar  el registro?'
         open={alertaEliminar}
         setOpen={setAlertaEliminar}
         onConfirmar={manejarConfirmarEliminar}
