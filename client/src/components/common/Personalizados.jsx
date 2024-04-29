@@ -2,7 +2,7 @@ import React from 'react';
 import { Link as LinkRouter, useLocation } from 'react-router-dom';
 import { Breadcrumbs, Link, Typography, Button } from '@mui/material';
 import { DataGrid, GridRowModes, GridActionsCellItem, GridRowEditStopReasons, GridToolbarContainer } from '@mui/x-data-grid';
-import { NavigateNext as NavigateNextIcon, SaveOutlined as SaveIcon, Close as CancelIcon, EditOutlined as EditIcon, DeleteOutlined as DeleteIcon, Add as AddIcon, BorderTop } from '@mui/icons-material';
+import { NavigateNext as NavigateNextIcon, SaveOutlined as SaveIcon, Close as CancelIcon, EditOutlined as EditIcon, DeleteOutlined as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 import { opcionesMenuLateral } from './constantes';
 import { AlertaConfirmacion } from './Alertas';
 import { opcionesValidasTabla } from './constantes';
@@ -70,8 +70,9 @@ const TablaToolbar = ({ setDatos, setModosFilas, siguienteId, modelo, nombreMode
 
   const manejarClick = () => {
     const newId = siguienteId();
+    if (!newId) return;
+
     setDatos((oldFilas) => [...oldFilas, { ...modelo, id: newId, isNew: true }]);
-    console.log(newId);
     setModosFilas((oldModel) => ({
       ...oldModel,
       [newId]: { mode: GridRowModes.Edit, fieldToFocus: Object.keys(modelo)[1] },
@@ -99,36 +100,54 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
   const [modosFilas, setModosFilas] = React.useState({});
   const [alertaEliminar, setAlertaEliminar] = React.useState(false);
 
-  const idFilaEliminar = React.useRef(null);
+  const filaEliminar = React.useRef(null);
   
   
-  const manejarClickEditar = (id) => () => {
-    setModosFilas({ ...modosFilas, [id]: { mode: GridRowModes.Edit } });
+  const manejarClickEditar = ({ row: filaActual }) => () => {
+    setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.Edit } });
   };
 
-  const manejarClickGuardar = (id) => () => {
-    setModosFilas({ ...modosFilas, [id]: { mode: GridRowModes.View } });
-  };
-
-  const manejarClickCancelar = (id) => () => {
-    setModosFilas({ ...modosFilas, [id]: { mode: GridRowModes.View, ignoreModifications: true } });
-    const filaEditada = datos.find((fila) => fila.id === id);
-    if (filaEditada?.isNew) {
-      setDatos(datos.filter((fila) => fila.id !== id));
+  const manejarClickGuardar = ({ row: filaActual }) => () => {
+    let resultado = false;
+    if (filaActual?.isNew) {
+      resultado = onAgregar(filaActual);
+    } else {
+      resultado = onEditar(filaActual);
     }
-    idFilaEliminar.current = null;
+
+    resultado = true;
+
+    if (resultado) {
+      setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.View } });
+    } else {
+      setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.Edit } });
+    }
   };
 
-  const manejarClickEliminar = (id) => () => {
+  const manejarClickCancelar = ({ row: filaActual }) => () => {
+    setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.View, ignoreModifications: true } });
+    const filaEditada = datos.find((fila) => fila.id === filaActual.id);
+    if (filaEditada?.isNew) {
+      setDatos(datos.filter((fila) => fila.id !== filaActual.id));
+    }
+    filaEliminar.current = null;
+  };
+
+  const manejarClickEliminar = ({ row: filaActual }) => () => {
     setAlertaEliminar(true);
-    idFilaEliminar.current = id;
+    filaEliminar.current = filaActual;
   };
 
   const manejarConfirmarEliminar = () => {
     setAlertaEliminar(false);
-    const id = idFilaEliminar.current;
-    setDatos(datos.filter((fila) => fila.id !== id));
-    idFilaEliminar.current = null;
+    const { id } = filaEliminar.current;
+    let resultado = false;
+    resultado = onEliminar(filaEliminar.current);
+    resultado = true;
+    if (resultado) {
+      setDatos(datos.filter((fila) => fila.id !== id));
+    }
+    filaEliminar.current = null;
   };
 
   const procesarCambiosFila = (newFila) => {
@@ -153,8 +172,8 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
     headerName: 'Opciones',
     width: 150,
     type: 'actions',
-    getActions: ({ id }) => {
-      const modoEditar = modosFilas[id]?.mode === GridRowModes.Edit;
+    getActions: (fila) => {
+      const modoEditar = modosFilas[fila.id]?.mode === GridRowModes.Edit;
 
       if (modoEditar) {
         return [
@@ -164,12 +183,12 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
             sx={{
               color: 'primary.main',
             }}
-            onClick={manejarClickGuardar(id)}
+            onClick={manejarClickGuardar(fila)}
           />,
           <GridActionsCellItem
             icon={<CancelIcon />}
             label='Cancelar'
-            onClick={manejarClickCancelar(id)}
+            onClick={manejarClickCancelar(fila)}
           />,
         ];
       }
@@ -180,7 +199,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
           <GridActionsCellItem
             icon={<EditIcon />}
             label='Editar'
-            onClick={manejarClickEditar(id)}
+            onClick={manejarClickEditar(fila)}
           />
         );
       }
@@ -189,7 +208,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label='Eliminar'
-            onClick={manejarClickEliminar(id)}
+            onClick={manejarClickEliminar(fila)}
           />
         );
       }

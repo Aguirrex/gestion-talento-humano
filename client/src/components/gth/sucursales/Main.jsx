@@ -92,6 +92,7 @@ const Main = () => {
 
   const postSucursal = async (sucursal) => {
     const { nombre } = sucursal;
+
     try {
       const response = await fetchApi().post('/sucursal', {
         data: { nombre }
@@ -102,6 +103,8 @@ const Main = () => {
       }  else {
         setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al agregar la sucursal', severity: 'error', open: true}));
         console.log(response);
+
+        return false;
       }
     } catch (err) {
       let mensajeError = '';
@@ -111,11 +114,16 @@ const Main = () => {
         mensajeError = 'Error al solicitar la creación de la sucursal al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
+
+      return false;
     }
+
+    return true;
   }
 
   const putSucursal = async (sucursal) => {
     const { id, nombre } = sucursal;
+
     try {
       const response = await fetchApi().put(`/sucursal/${id}`, {
         data: { nombre }
@@ -125,6 +133,8 @@ const Main = () => {
       } else {
         setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al modificar la sucursal', severity: 'error', open: true}));
         console.log(response);
+
+        return false;
       }
     } catch (err) {
       let mensajeError = '';
@@ -138,11 +148,16 @@ const Main = () => {
         mensajeError = 'Error al solicitar la modificación de la sucursal al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
+
+      return false;
     }
+
+    return true;
   }
 
   const deleteSucursal = async (sucursal) => {
     const { id } = sucursal;
+
     try {
       const response = await fetchApi().delete(`/sucursal/${id}`);
       if (response?.data) {
@@ -150,6 +165,8 @@ const Main = () => {
       } else {
         setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al eliminar la sucursal', severity: 'error', open: true}));
         console.log(response);
+
+        return false;
       }
     } catch (err) {
       let mensajeError = '';
@@ -163,7 +180,34 @@ const Main = () => {
         mensajeError = 'Error al solicitar la eliminación de la sucursal al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
+
+      return false;
     }
+
+    return true;
+  }
+
+  const siguienteId = async () => {
+    try {
+      const response = await fetchApi().get('/sucursales/siguienteId');
+      if (response?.data) {
+        const { siguiente_id_sucursales } = response.data;
+        return siguiente_id_sucursales;
+      } else {
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar el siguiente id de la sucursal', severity: 'error', open: true}));
+        console.log(response);
+      }
+    } catch (err) {
+      let mensajeError = '';
+      if(err.response) {
+        mensajeError = err.response.data.message;
+      } else {
+        mensajeError = 'Error al solicitar el siguiente id de sucursal al servidor';
+      }
+      setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
+    }
+
+    return false;
   }
 
 
@@ -189,6 +233,9 @@ const Main = () => {
               setDatos={setSucursales}
               modelo={modeloSucursal}
               siguienteId={() => sucursales.length + 1}
+              onAgregar={postSucursal}
+              onEditar={putSucursal}
+              onEliminar={deleteSucursal}
               sx={{ bgcolor: 'background.paper' }}
             />
           </Box>
