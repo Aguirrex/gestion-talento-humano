@@ -13,7 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.ingesoft.api.usuario.Tipo.GERENCIA;
-import static org.springframework.http.HttpMethod.POST;
+import static com.ingesoft.api.usuario.Tipo.RH;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -35,7 +36,14 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                     req.requestMatchers(WHITE_LIST_URL)
                             .permitAll()
-                            .requestMatchers(POST,"/vacante").hasAuthority(GERENCIA.name())
+                            .requestMatchers("/vacante").hasAuthority(GERENCIA.name())
+                            .requestMatchers(POST,"/sucursal/**").hasAnyAuthority(GERENCIA.name(),RH.name())
+                            .requestMatchers(PUT,"/sucursal/**").hasAnyAuthority(GERENCIA.name(),RH.name())
+                            .requestMatchers(GET,"/sucursales").hasAnyAuthority(GERENCIA.name(),RH.name())
+                            .requestMatchers(DELETE,"/sucursal/**").hasAnyAuthority(GERENCIA.name(),RH.name())
+                            .requestMatchers(POST,"/cargo/**").hasAnyAuthority(GERENCIA.name())
+                            .requestMatchers(GET,"/cargos").hasAnyAuthority(GERENCIA.name(),RH.name())
+                            .requestMatchers(GET,"/cargos/**").hasAnyAuthority(GERENCIA.name())
                             .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
