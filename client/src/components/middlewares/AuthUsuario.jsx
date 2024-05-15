@@ -33,7 +33,7 @@ const AuthUsuario = ({ children, tipoUsuario }) => {
     };
 
     if (MODE === 'development') {
-      setUsuario({ dni: '12345', tipo: 'RH' });
+      setUsuario({ dni: '12345', tipo: 'GERENCIA' });
       console.log('Usuario autenticado');
     } else {
       auth();

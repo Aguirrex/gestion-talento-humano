@@ -20,11 +20,14 @@ opcionesMenuLateral
 
 const getTituloPorRuta = (opciones, ruta) => {
   for (let i = 0; i < opciones.length; i++) {
+    console.log(opciones[i].ruta, ruta);
     if (opciones[i]?.ruta === ruta) return opciones[i].texto;
     if (opciones[i]?.children) return getTituloPorRuta(opciones[i].children, ruta);
-    return 'GTH'
   }
+  return 'GTH'
 };
+
+const widthMenuLateral = 270;
 
 
 
@@ -82,13 +85,14 @@ const Navegacion = () => {
 
       <Box
         sx={{ 
-          display: 'flex', 
+          display: 'flex',
+          width: '100%',
           height: `calc(99vh - ${refBarraSuperior.current?.clientHeight}px)` }}>
 
         <List
           component='nav'
           sx={{ 
-            width: '300px', 
+            width: widthMenuLateral, 
             display: { xs: 'none', md: 'block' }, 
             height: '100%',
             bgcolor: 'background.paper',
@@ -127,7 +131,9 @@ const Navegacion = () => {
 
         </List>
 
-        <Outlet />
+        <Box sx={{ width: { sm: '100%', md: `calc(100vw - ${widthMenuLateral}px)` } }}>
+          <Outlet />
+        </Box>
 
       </Box>
       

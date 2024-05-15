@@ -69,14 +69,16 @@ const BreadcrumbsCustom = () => {
 const TablaToolbar = ({ setDatos, setModosFilas, siguienteId, modelo, nombreModelo }) => {
 
   const manejarClick = () => {
-    const newId = siguienteId();
-    if (!newId) return;
+    siguienteId().then((newId) => {
+      console.log(newId);
+      if (!newId) return;
 
-    setDatos((oldFilas) => [...oldFilas, { ...modelo, id: newId, isNew: true }]);
-    setModosFilas((oldModel) => ({
-      ...oldModel,
-      [newId]: { mode: GridRowModes.Edit, fieldToFocus: Object.keys(modelo)[1] },
-    }));
+      setDatos((oldFilas) => [...oldFilas, { ...modelo, id: newId, isNew: true }]);
+      setModosFilas((oldModel) => ({
+        ...oldModel,
+        [newId]: { mode: GridRowModes.Edit, fieldToFocus: Object.keys(modelo)[1] },
+      }));
+    });
   };
 
   return (
@@ -86,7 +88,7 @@ const TablaToolbar = ({ setDatos, setModosFilas, siguienteId, modelo, nombreMode
         startIcon={<AddIcon />} 
         onClick={manejarClick}
         variant='contained'
-        sx={{ m: 1, mb: 2 }}>
+        sx={{ m: 1, mb: 1 }}>
         Agregar {nombreModelo ? nombreModelo[0].toUpperCase() + nombreModelo.slice(1): ''}
       </Button>
     </GridToolbarContainer>
@@ -98,6 +100,8 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
 
   // const [filas, setDatos] = React.useState(datos);
   const [modosFilas, setModosFilas] = React.useState({});
+  const filasEditadas = React.useRef({});
+  const [cargando, setCargando] = React.useState(false);
   const [alertaEliminar, setAlertaEliminar] = React.useState(false);
 
   const filaEliminar = React.useRef(null);
@@ -107,21 +111,8 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
     setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.Edit } });
   };
 
-  const manejarClickGuardar = ({ row: filaActual }) => () => {
-    let resultado = false;
-    if (filaActual?.isNew) {
-      resultado = onAgregar(filaActual);
-    } else {
-      resultado = onEditar(filaActual);
-    }
-
-    resultado.then((res) => {
-      if (res) {
-        setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.View } });
-      } else {
-        setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.Edit } });
-      }
-    });
+  const manejarClickGuardar = ({ row: filaActual, ...otros }) => () => {
+    setModosFilas({ ...modosFilas, [filaActual.id]: { mode: GridRowModes.View } });
   };
 
   const manejarClickCancelar = ({ row: filaActual }) => () => {
@@ -141,18 +132,47 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
   const manejarConfirmarEliminar = () => {
     setAlertaEliminar(false);
     const { id } = filaEliminar.current;
+
+    setCargando(true);
+
     let resultado = false;
     resultado = onEliminar(filaEliminar.current);
+
     resultado.then((res) => {
       if (!res) return;
-      setDatos(datos.filter((fila) => fila.id !== id));
+      setDatos(oldDatos => oldDatos.filter((fila) => fila.id !== id));
+    })
+    .finally(() => {
+      setCargando(false);
     });
+
     filaEliminar.current = null;
   };
 
   const procesarCambiosFila = (newFila) => {
-    const filaModif = { ...newFila, isNew: false };
-    setDatos(datos.map((fila) => (fila.id === newFila.id ? filaModif : fila)));
+    const filaModif = { ...newFila, isNew: newFila.isNew ? true : false};
+
+    setCargando(true);
+
+    let resultado = false;
+    if (newFila?.isNew) {
+      resultado = onAgregar(newFila);
+    } else {
+      resultado = onEditar(newFila);
+    }
+
+    resultado.then((res) => {
+      if (res) {
+        setModosFilas({ ...modosFilas, [newFila.id]: { mode: GridRowModes.View } });
+      } else {
+        setModosFilas({ ...modosFilas, [newFila.id]: { mode: GridRowModes.Edit } });
+      }
+    })
+    .finally(() => {
+      setCargando(false);
+    });
+
+    setDatos(oldDatos => oldDatos.map(fila => (fila.id === newFila.id ? filaModif : fila)));
     return filaModif;
   };
 
@@ -162,9 +182,13 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
     
 
   const manejarEditStop = (params, event) => {
-    console.log(params.reason);
+    console.log(params);
+    console.log(event);
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
+    }
+    if (params.reason === GridRowEditStopReasons.escapeKeyDown) {
+      setDatos(oldDatos => oldDatos.filter((fila) => fila.id !== params.row.id));
     }
   };
 
@@ -231,6 +255,8 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
         onRowModesModelChange={manejarCambioModos}
         onRowEditStop={manejarEditStop}
         processRowUpdate={procesarCambiosFila}
+        loading={cargando}
+        getRowClassName={params => modosFilas[params.row.id]?.mode === GridRowModes.Edit ? 'fila-editando' : ''}
         slotProps={{
           toolbar: {
             setDatos, setModosFilas, siguienteId, modelo, nombreModelo
@@ -242,7 +268,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
         sx={{
           ...sx,
           '& .MuiDataGrid-toolbarContainer': {
-            borderBottom: theme => `1px solid ${theme.palette.lightBlue.main}`,
+            borderBottom: 'none',
           },
           '& .MuiDataGrid-columnHeader': {
             bgcolor: 'background.paper',            
@@ -257,6 +283,16 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
           },
           '& .MuiDataGrid-cellEmpty': {       
             borderRight: 'none',
+          },
+          '& .fila-editando': {
+            '& .MuiDataGrid-cell': {
+              bgcolor: 'secondary.light',
+            },
+          },
+          '& .MuiDataGrid-main': {
+            m: 1,
+            border: theme => `1px solid ${theme.palette.grey['300']}`,
+            borderRadius: 1,
           },
         }}
       />

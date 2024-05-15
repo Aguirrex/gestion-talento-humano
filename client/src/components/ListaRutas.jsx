@@ -7,6 +7,8 @@ import Navegacion from './gth/Navegacion';
 import NotFound from './NotFound';
 
 import { Sucursales } from './gth/sucursales';
+import { Cargos } from './gth/cargos';
+import { Vacantes } from './gth/vacantes';
 
 
 
@@ -18,6 +20,10 @@ const ListaRutas = () => {
       <Route path='/gth' element={<AuthUsuario><Navegacion /></AuthUsuario>}>
         <Route index element={<Dashboard />} />
         <Route path='sucursales' element={<Sucursales />} />
+        <Route path='cargos' element={<Cargos />} />
+        <Route path='seleccion'>
+          <Route path='vacantes' element={<Vacantes />} />
+        </Route>
       </Route>
       <Route path='*' element={<NotFound />} />
     </Routes>

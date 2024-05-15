@@ -92,6 +92,7 @@ const Main = () => {
 
   const postSucursal = async (sucursal) => {
     const { nombre } = sucursal;
+    console.log(sucursal);
 
     try {
       const response = await fetchApi().post('/sucursal', {
@@ -123,6 +124,7 @@ const Main = () => {
 
   const putSucursal = async (sucursal) => {
     const { id, nombre } = sucursal;
+    console.log(sucursal);
 
     try {
       const response = await fetchApi().put(`/sucursal/${id}`, {
@@ -196,6 +198,8 @@ const Main = () => {
       } else {
         setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar el siguiente id de la sucursal', severity: 'error', open: true}));
         console.log(response);
+
+        return false;
       }
     } catch (err) {
       let mensajeError = '';
@@ -205,9 +209,9 @@ const Main = () => {
         mensajeError = 'Error al solicitar el siguiente id de sucursal al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
-    }
 
-    return false;
+      return false;
+    }
   }
 
 
@@ -232,7 +236,7 @@ const Main = () => {
               datos={sucursales}
               setDatos={setSucursales}
               modelo={modeloSucursal}
-              siguienteId={() => sucursales.length + 1}
+              siguienteId={siguienteId}
               onAgregar={postSucursal}
               onEditar={putSucursal}
               onEliminar={deleteSucursal}

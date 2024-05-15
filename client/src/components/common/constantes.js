@@ -9,7 +9,7 @@ const tiposUsuario = {
 
 const opcionesMenuLateral = [
   {icono: HailIcon, texto: 'Sucursales', usuarios: [tiposUsuario.RH, tiposUsuario.GERENCIA], ruta: '/gth/sucursales'},
-  {icono: HailIcon, texto: 'Cargos', usuarios: [tiposUsuario.RH, tiposUsuario.GERENCIA], ruta: '/gth/cargos'},
+  {icono: HailIcon, texto: 'Cargos', usuarios: [tiposUsuario.GERENCIA], ruta: '/gth/cargos'},
   {icono: HailIcon, texto: 'Selección', children: [
     {icono: HailIcon, texto: 'Vacantes', usuarios: [tiposUsuario.GERENCIA], ruta: '/gth/seleccion/vacantes'},
     {icono: HailIcon, texto: 'Candidatos', ruta: '/gth/seleccion/candidatos'},
