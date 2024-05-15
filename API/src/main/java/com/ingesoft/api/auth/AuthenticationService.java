@@ -64,6 +64,7 @@ public class AuthenticationService {
 
     public AuthenticationTokenResponse authenticateToken(HttpHeaders headers){
         String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        assert authHeader != null;
         final String jwt = authHeader.substring(7);
         var user = jwtService.getUser(jwt);
         return AuthenticationTokenResponse.builder()
