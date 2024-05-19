@@ -1,16 +1,12 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Stack, Container } from '@mui/material';
-import { Link as LinkRouter } from 'react-router-dom';
+import { LinkCustom } from '../common/Personalizados';
 
 import logo from '../../assets/logo.png';
 
 const opcionesMenu = [
   { titulo: 'Iniciar Sesión', url: '/login' },
 ];
-
-const LinkCustom = React.forwardRef((itemProps, ref) => {
-  return <LinkRouter ref={ref} {...itemProps} role={undefined} />;
-});
 
 const Presentacion = () => {
   return (
@@ -37,7 +33,7 @@ const Presentacion = () => {
 
           <Stack direction='row' sx={{ ml: 'auto' }}>
             {opcionesMenu.map((opcion, index) => (
-              <Button key={index} variant='contained' component={LinkCustom} to={opcion.url} sx={{ borderRadius: 100 }}>
+              <Button key={index} variant='contained' component={LinkCustom} to={opcion.url} sx={{ borderRadius: '18px' }}>
                 {opcion.titulo}
               </Button>
             ))}
@@ -52,13 +48,13 @@ const Presentacion = () => {
           fontWeight='bold' 
           color='primary.main' 
           textAlign='center'>
-          {'El mejor partner para '}
+          {'El mejor partner para la '}
           <Typography
             variant='h2' 
             fontWeight='bold' 
             component='span' 
             color='secondary.main'>
-            la gestión de talento y nómina
+            gestión de talento y nómina
           </Typography>
         </Typography>
         <Typography textAlign='center' variant='subtitle1'>

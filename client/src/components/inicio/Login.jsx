@@ -35,7 +35,7 @@ const Login = () => {
     }),
     onSubmit: (inputs) => {
       // setCargando(true);
-      fetchApi().post('/login', {
+      fetchApi().post('/auth/login', {
         data: {
           dni: inputs.dni,
           password: inputs.password
@@ -49,7 +49,7 @@ const Login = () => {
           const { dni, tipo } = response.data.usuario;
           setUsuario({ dni, tipo });
           
-          navigate('/gh', { replace: true });
+          navigate('/gth', { replace: true });
         } else {
           setTokenUsuario(null);
           setUsuario(null);
@@ -96,8 +96,8 @@ const Login = () => {
             required
             name='dni'
             autoFocus
-            error={formikTouched.dni && formikErrors.dni}
-            helperText={formikTouched.dni && formikErrors.dni}
+            error={formikTouched.dni && formikErrors.dni?.length > 0}
+            helperText={formikErrors.dni}
             {...getFormikProps('dni')}
             sx={{ mb: 3 }} />
           <TextField 
@@ -106,8 +106,8 @@ const Login = () => {
             type='password' 
             required
             name='password'
-            error={formikTouched.password && formikErrors.password}
-            helperText={formikTouched.password && formikErrors.password}
+            error={formikTouched.password && formikErrors.password?.length > 0}
+            helperText={formikErrors.password}
             {...getFormikProps('password')}
             sx={{ mb: 3 }} />
           <Button variant='contained' color='primary' type='submit' sx={{ mt: 3 }}>Iniciar sesión</Button>

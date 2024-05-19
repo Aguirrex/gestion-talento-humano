@@ -9,7 +9,7 @@ const fetchApi = () => {
 
   const jwtTokenUsuario = getTokenUsuario();
 
-  if (jwtTokenUsuario && jwtTokenUsuario !== null && jwtTokenUsuario.length > 0) {
+  if (jwtTokenUsuario && jwtTokenUsuario !== null && jwtTokenUsuario !== 'null' && jwtTokenUsuario.length > 0) {
     config.headers = {Authorization: `Bearer ${jwtTokenUsuario}`};
   }
   return axios.create(config);

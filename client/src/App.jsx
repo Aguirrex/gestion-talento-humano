@@ -10,7 +10,7 @@ function App() {
     <Theme>
       <CssBaseline />
       <UsuarioProvider>
-        <Box sx={{ display: 'flex' }}>
+        <Box>
           <ListaRutas />
         </Box>
       </UsuarioProvider>
