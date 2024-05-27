@@ -96,7 +96,7 @@ const Main = () => {
 
     try {
       const response = await fetchApi().post('/sucursal', {
-        data: { nombre }
+        nombre
       });
       if (response?.data) {
         const { sucursal: newSucursal } = response.data;
@@ -128,7 +128,7 @@ const Main = () => {
 
     try {
       const response = await fetchApi().put(`/sucursal/${id}`, {
-        data: { nombre }
+        nombre
       });
       if (response?.data) {
         setAlerta(alerta => ({...alerta, mensaje: `Sucursal modificada exitosamente`, severity: 'success', open: true}));

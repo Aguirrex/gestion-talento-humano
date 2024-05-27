@@ -95,6 +95,13 @@ const Main = () => {
       valueOptions: cargos
     },
     {
+      field: 'descripcion',
+      headerName: 'Descripción',
+      minWidth: 250,
+      maxWidth: 400,
+      editable: getEditable(usuario)
+    },
+    {
       field: 'url_perfil',
       headerName: 'Perfil',
       minWidth: 150,
@@ -124,7 +131,7 @@ const Main = () => {
       field: 'estado',
       headerName: 'Estado',
       width: 100,
-      editable: false,
+      editable: getEditable(usuario),
       type: 'boolean'
     }
   ];
@@ -162,7 +169,7 @@ const Main = () => {
 
     try {
       const response = await fetchApi().post('/vacante', {
-        data: { titulo, descripcion, id_cargo }
+        titulo, descripcion, id_cargo
       });
       if (response?.data) {
         const { vacante: newVacante } = response.data;
@@ -193,7 +200,7 @@ const Main = () => {
 
     try {
       const response = await fetchApi().put(`/vacante/${id}`, {
-        data: { titulo, descripcion }
+        titulo, descripcion
       });
       if (response?.data) {
         setAlerta(alerta => ({...alerta, mensaje: `Vacante modificado exitosamente`, severity: 'success', open: true}));
