@@ -62,4 +62,20 @@ public class CargoService {
                 "siguiente_id_cargos", cargo.getId() + 1
         );
     }
+
+    public Map<String, Object> updateCargo(Map<String, Object> request, Integer id) {
+        var cargo = cargoRepository.findById(id).orElseThrow();
+        cargo.setNombre(request.get("nombre").toString());
+        cargo.setDescripcion(request.get("descripcion").toString());
+        cargoRepository.save(cargo);
+
+        return Map.of(
+                "message", "OK",
+                "cargo", Map.of(
+                        "id", cargo.getId(),
+                        "nombre", cargo.getNombre(),
+                        "descripcion", cargo.getDescripcion()
+                )
+        );
+    }
 }

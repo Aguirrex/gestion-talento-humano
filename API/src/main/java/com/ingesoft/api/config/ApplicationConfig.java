@@ -45,10 +45,13 @@ public class ApplicationConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean public WebMvcConfigurer corsConfigurer() {
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override public void addCorsMappings(@Nonnull org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE");
             }
         };
     }
