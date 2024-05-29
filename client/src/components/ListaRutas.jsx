@@ -9,6 +9,9 @@ import NotFound from './NotFound';
 import { Sucursales } from './gth/sucursales';
 import { Cargos } from './gth/cargos';
 import { Vacantes } from './gth/vacantes';
+import { Candidatos } from './gth/candidatos';
+import { Empleados } from './gth/empleados';
+import { Novedades } from './gth/novedades';
 
 
 
@@ -23,6 +26,7 @@ const ListaRutas = () => {
         <Route path='cargos' element={<Cargos />} />
         <Route path='seleccion'>
           <Route path='vacantes' element={<Vacantes />} />
+          <Route path='candidatos' element={<Candidatos />} />
         </Route>
       </Route>
       <Route path='*' element={<NotFound />} />
