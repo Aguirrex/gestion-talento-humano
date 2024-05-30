@@ -67,6 +67,12 @@ public class PersonaService {
 
     public Map<String, Object> updatePersona(Map<String, Object> request, Long id) {
         var persona = personaRepository.findById(id).orElseThrow();
+        persona.setDni(request.get("dni").toString());
+        persona.setTipo(request.get("tipo_documento") != null ? Tipo.valueOf(request.get("tipo_documento").toString()) : null);
+        persona.setNombre1(request.get("nombre1") != null ? request.get("nombre1").toString() : null);
+        persona.setNombre2(request.get("nombre2") != null ? request.get("nombre2").toString() : null);
+        persona.setApellido1(request.get("apellido1") != null ? request.get("apellido1").toString() : null);
+        persona.setApellido2(request.get("apellido2") != null ? request.get("apellido2").toString() : null);
         persona.setDireccion(request.get("direccion") != null ? request.get("direccion").toString() : null); 
         persona.setTelefono(request.get("telefono") != null ? request.get("telefono").toString() : null); //Por si el valor que se recibe es nulo para que no haya un error al hacer toString a un valor nulo se pone el valor como nulo
         persona.setCelular(request.get("celular") != null ? request.get("celular").toString() : null);
