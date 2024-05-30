@@ -30,6 +30,10 @@ const ListaRutas = () => {
           <Route path='vacantes' element={<Vacantes />} />
           <Route path='candidatos' element={<Candidatos />} />
         </Route>
+        <Route path='empleados'>
+          <Route path='listado' element={<Empleados />} />
+          <Route path='novedades' element={<Novedades />} />
+        </Route>
       </Route>
       <Route path='*' element={<NotFound />} />
     </Routes>
