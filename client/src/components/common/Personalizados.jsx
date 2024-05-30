@@ -269,7 +269,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
           }
         }}
         slots={{
-          toolbar: TablaToolbar
+          toolbar: opcionesValidas.includes(opcionesValidasTabla.AGREGAR) ? TablaToolbar : null
         }}
         sx={{
           ...sx,

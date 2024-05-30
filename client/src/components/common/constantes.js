@@ -25,7 +25,8 @@ const opcionesMenuLateral = [
 
 const opcionesValidasTabla = {
   EDITAR: 'editar',
-  ELIMINAR: 'eliminar'
+  ELIMINAR: 'eliminar',
+  AGREGAR: 'agregar',
 };
 
 const tiposDocumento = {

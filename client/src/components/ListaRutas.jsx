@@ -13,6 +13,7 @@ import { Candidatos } from './gth/candidatos';
 import { Personas } from './gth/personas';
 import { Empleados } from './gth/empleados';
 import { Novedades } from './gth/novedades';
+import { Nomina } from './gth/nomina';
 
 
 
@@ -34,6 +35,7 @@ const ListaRutas = () => {
           <Route path='listado' element={<Empleados />} />
           <Route path='novedades' element={<Novedades />} />
         </Route>
+        <Route path='nomina' element={<Nomina />} />
       </Route>
       <Route path='*' element={<NotFound />} />
     </Routes>

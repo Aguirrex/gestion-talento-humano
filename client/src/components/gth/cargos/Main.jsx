@@ -37,7 +37,7 @@ const cargosInicial = [
 
 const getPermisos = (usuario) => {
   return (usuario?.tipo === tiposUsuario.GERENCIA) 
-    ? [opcionesValidasTabla.EDITAR] 
+    ? [opcionesValidasTabla.EDITAR, opcionesValidasTabla.AGREGAR] 
     : [];
 }
 

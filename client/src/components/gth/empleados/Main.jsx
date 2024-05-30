@@ -64,7 +64,9 @@ const sucursalesInicial = [
 ];
 
 const getPermisos = (usuario) => {
-  return [];
+  return (usuario?.tipo === tiposUsuario.RH)
+    ? [opcionesValidasTabla.AGREGAR]
+    : [];
 }
 
 const getEditable = (usuario) => {
