@@ -3,6 +3,7 @@ package com.ingesoft.api.contrato_persona;
 import com.ingesoft.api.cargo.CargoRepository;
 import com.ingesoft.api.persona.PersonaRepository;
 import com.ingesoft.api.salario.Salario;
+import com.ingesoft.api.salario.SalarioRepository;
 import com.ingesoft.api.sucursal.SucursalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class ContratoPersonaService {
     private final PersonaRepository personaRepository;
     private final CargoRepository cargoRepository;
     private final SucursalRepository sucursalRepository;
+    private final SalarioRepository salarioRepository;
 
     public Map<String, Object> createEmpleado(Map<String, Object> request) {
 
@@ -109,11 +111,20 @@ public class ContratoPersonaService {
             auxilio_transporte = BigDecimal.ZERO;
         }
 
-        Salario salario = Salario.builder()
-                .salario(salarioValue)
-                .auxilio_transporte(auxilio_transporte)
-                .build();
+        Salario salario;
+        if (salarioRepository.existsById(id)) {
+            salario = salarioRepository.findById(id).get();
+            salario.setSalario(salarioValue);
+            salario.setAuxilio_transporte(auxilio_transporte);
+        } else {
+            salario = Salario.builder()
+                    .contratoPersona(empleado)
+                    .salario(salarioValue)
+                    .auxilio_transporte(auxilio_transporte)
+                    .build();
+        }
 
+        salarioRepository.save(salario);
         empleado.setSalario(salario);
         contratoPersonaRepository.save(empleado);
 

@@ -59,6 +59,8 @@ public class ContratoPersonaController {
         try {
             return ResponseEntity.ok(service.updateEmpleado(request, parseLong(id)));
         } catch (Exception e){
+            e.printStackTrace();
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body(BadRequestsResponse.builder().message("ERR_EMPLEADO_DATA").build());
         }
     }
