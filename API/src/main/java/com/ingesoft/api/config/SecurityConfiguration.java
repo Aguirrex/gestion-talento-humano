@@ -62,6 +62,9 @@ public class SecurityConfiguration {
                             .requestMatchers(GET, "/empleado/{id}").hasAnyAuthority(RH.name(), GERENCIA.name())
                             .requestMatchers(GET, "/empleado/siguienteId").hasAnyAuthority(RH.name())
                             .requestMatchers(PUT, "/empleado/{id}").hasAnyAuthority(RH.name())
+                            .requestMatchers(POST,"/novedad").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET,"/novedades").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET,"/novedad/siguienteId").hasAnyAuthority(RH.name())
                             .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

@@ -1,13 +1,11 @@
 package com.ingesoft.api.vacante;
 
+import com.ingesoft.api.candidato.CandidatoRepository;
 import com.ingesoft.api.cargo.CargoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +13,7 @@ public class VacanteService {
 
     private final VacanteRepository vacRepository;
     private final CargoRepository carRepository;
+    private final CandidatoRepository candidatoRepository;
 
     public Map<String, Object> createVacante(VacanteRequest request){
 
@@ -79,6 +78,13 @@ public class VacanteService {
         if (request.get("estado") == Boolean.FALSE){
             vacante.setEstado(Boolean.FALSE);
             vacante.setFecha_cierre(new Date());
+            var candidatos = candidatoRepository.findAll();
+            candidatos.forEach(candidato -> {if(Objects.equals(candidato.getId().getVacante().getId(), vacante.getId())) {
+                candidato.setEstado(Boolean.FALSE);
+                candidatoRepository.save(candidato);
+            }});
+
+
         }else{
             vacante.setEstado(Boolean.TRUE);
             vacante.setFecha_cierre(null);
@@ -98,6 +104,13 @@ public class VacanteService {
         vacante.setEstado(Boolean.FALSE);
         vacante.setFecha_cierre(new Date());
         vacRepository.save(vacante);
+
+        var candidatos = candidatoRepository.findAll();
+
+        candidatos.forEach(candidato -> {if(Objects.equals(candidato.getId().getVacante().getId(), vacante.getId())) {
+            candidato.setEstado(Boolean.FALSE);
+            candidatoRepository.save(candidato);
+        }});
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("message", "OK");
