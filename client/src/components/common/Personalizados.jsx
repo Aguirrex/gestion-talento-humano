@@ -149,8 +149,8 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
     filaEliminar.current = null;
   };
 
-  const procesarCambiosFila = (newFila) => {
-    const filaModif = { ...newFila, isNew: newFila.isNew ? true : false};
+  const procesarCambiosFila = async (newFila) => {
+    let filaModif = { ...newFila, isNew: newFila.isNew ? true : false};
 
     setCargando(true);
 
@@ -163,17 +163,22 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
 
     resultado.then((res) => {
       if (res) {
+        if (res !== true) {
+          filaModif = { ...filaModif, ...res };
+        }
         setModosFilas({ ...modosFilas, [newFila.id]: { mode: GridRowModes.View } });
       } else {
         setModosFilas({ ...modosFilas, [newFila.id]: { mode: GridRowModes.Edit } });
       }
+      setDatos(oldDatos => oldDatos.map(fila => (fila.id === newFila.id ? filaModif : fila)));
+      return filaModif;
     })
     .finally(() => {
       setCargando(false);
     });
 
-    setDatos(oldDatos => oldDatos.map(fila => (fila.id === newFila.id ? filaModif : fila)));
     return filaModif;
+    
   };
 
   const manejarCambioModos = (newModos) => {
@@ -255,6 +260,8 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
         onRowModesModelChange={manejarCambioModos}
         onRowEditStop={manejarEditStop}
         processRowUpdate={procesarCambiosFila}
+        onProcessRowUpdateError={(params) => console.log(params)}
+        isCellEditable={opcionesValidas.includes(opcionesValidasTabla.EDITAR) ? () => true : params => params.row.isNew}
         loading={cargando}
         getRowClassName={params => modosFilas[params.row.id]?.mode === GridRowModes.Edit ? 'fila-editando' : ''}
         slotProps={{

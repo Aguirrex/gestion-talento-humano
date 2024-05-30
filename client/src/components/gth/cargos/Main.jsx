@@ -102,7 +102,7 @@ const Main = () => {
 
     try {
       const response = await fetchApi().post('/cargo', {
-        data: { nombre, descripcion }
+        nombre, descripcion
       });
       if (response?.data) {
         const { cargo: newCargo } = response.data;
@@ -133,7 +133,7 @@ const Main = () => {
 
     try {
       const response = await fetchApi().put(`/cargo/${id}`, {
-        data: { nombre }
+        nombre
       });
       if (response?.data) {
         setAlerta(alerta => ({...alerta, mensaje: `Cargo modificado exitosamente`, severity: 'success', open: true}));

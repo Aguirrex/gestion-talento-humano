@@ -103,7 +103,7 @@ const Navegacion = () => {
               <ListItemButton onClick={
                 opcion.children ? () => setMenuLateral({ ...menuLateralInicial, [index]: !menuLateral?.[index] }) : () => navigate(opcion.ruta)}>
                 <ListItemIcon>
-                  <HailIcon />
+                  <opcion.icono />
                 </ListItemIcon>
                 <ListItemText primary={opcion.texto} />
                 {opcion.children && (
@@ -118,7 +118,7 @@ const Navegacion = () => {
                     {opcion.children.map((subOpcion, subIndex) => (subOpcion?.usuarios === undefined || subOpcion.usuarios.includes(usuario.tipo)) && (
                       <ListItemButton key={subIndex} component={LinkCustom} to={subOpcion.ruta} sx={{ pl: 4 }}>
                         <ListItemIcon>
-                          <HailIcon />
+                          <subOpcion.icono />
                         </ListItemIcon>
                         <ListItemText primary={subOpcion.texto} />
                       </ListItemButton>
