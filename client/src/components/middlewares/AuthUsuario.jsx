@@ -18,7 +18,7 @@ const AuthUsuario = ({ children, tipoUsuario }) => {
       }
 
       try {
-        const response = await fetchApi(getTokenUsuario()).post('/autenticarToken');
+        const response = await fetchApi(getTokenUsuario()).post('auth/autenticarToken');
         console.log(response.data.usuario);
         if (response.data.usuario) {
           setUsuario(response.data.usuario);
@@ -33,7 +33,7 @@ const AuthUsuario = ({ children, tipoUsuario }) => {
     };
 
     if (MODE === 'development') {
-      setUsuario({ dni: '12345', tipo: 'GERENCIA' });
+      setUsuario({ dni: '12345', tipo: 'RH' });
       console.log('Usuario autenticado');
     } else {
       auth();
