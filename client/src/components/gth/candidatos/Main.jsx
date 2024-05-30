@@ -13,12 +13,10 @@ const modeloCandidato = {
   id_vacante: 0,
   id_persona: 0,
   dni: '',
-  nombre1: '',
-  nombre2: '',
-  apellido1: '',
-  apellido2: '',
   email: '',
-  telefono: '',
+  nombre_completo: '',
+  titulo_vacante: '',
+  nombre_cargo: '',
   estado: true
 };
 
@@ -216,6 +214,7 @@ const Main = () => {
             size='small'
             startIcon={<WorkIcon />}
             onClick={() => {
+              if (params.row.nombre_completo === '' || params.row.nombre_completo === null) return;
               candidatoContratar.current = params.row;
               setOpenFormContratar(true);
             }}

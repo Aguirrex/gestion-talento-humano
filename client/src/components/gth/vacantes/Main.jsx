@@ -196,11 +196,11 @@ const Main = () => {
   }
 
   const putVacante = async (vacante) => {
-    const { id, titulo, descripcion } = vacante;
+    const { id, titulo, descripcion, estado } = vacante;
 
     try {
       const response = await fetchApi().put(`/vacante/${id}`, {
-        titulo, descripcion
+        titulo, descripcion, estado
       });
       if (response?.data) {
         setAlerta(alerta => ({...alerta, mensaje: `Vacante modificado exitosamente`, severity: 'success', open: true}));

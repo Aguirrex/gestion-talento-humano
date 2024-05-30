@@ -259,6 +259,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
         onRowModesModelChange={manejarCambioModos}
         onRowEditStop={manejarEditStop}
         processRowUpdate={procesarCambiosFila}
+        onProcessRowUpdateError={(params) => console.log(params)}
         isCellEditable={opcionesValidas.includes(opcionesValidasTabla.EDITAR) ? () => true : params => params.row.isNew}
         loading={cargando}
         getRowClassName={params => modosFilas[params.row.id]?.mode === GridRowModes.Edit ? 'fila-editando' : ''}
