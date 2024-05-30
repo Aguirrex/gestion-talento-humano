@@ -177,7 +177,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
       setCargando(false);
     });
 
-    
+    return filaModif;
   };
 
   const manejarCambioModos = (newModos) => {
