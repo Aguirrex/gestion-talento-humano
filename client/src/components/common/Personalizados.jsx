@@ -149,7 +149,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
     filaEliminar.current = null;
   };
 
-  const procesarCambiosFila = (newFila) => {
+  const procesarCambiosFila = async (newFila) => {
     let filaModif = { ...newFila, isNew: newFila.isNew ? true : false};
 
     setCargando(true);
@@ -177,6 +177,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
       setCargando(false);
     });
 
+    return filaModif;
     
   };
 

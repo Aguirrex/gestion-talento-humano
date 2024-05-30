@@ -52,8 +52,7 @@ public class CandidatoService {
     public Map<String, Object> getCandidatos(){
         var candidatos = canRepository.findAll();
 
-        var candidatosActivos = candidatos.stream().filter(candidato -> candidato.getEstado() != null).toList();
-
+        var candidatosActivos = candidatos.stream().filter(Candidato::getEstado).toList();
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("message", "OK");
         responseMap.put("candidatos", candidatosActivos.stream().map(this::CandidatoMap));
@@ -80,10 +79,7 @@ public class CandidatoService {
                 .persona(perRepository.findById(((Number)request.get("id_persona")).longValue()).orElseThrow())
                 .build()).orElseThrow();
 
-        @SuppressWarnings("unchecked")
-        Map<String,Object> contratoRequest = (Map<String, Object>) request.get("contrato_persona");
-
-        var salarioReq = BigDecimal.valueOf((Double)contratoRequest.get("salario"));
+        var salarioReq = BigDecimal.valueOf(Long.parseLong(request.get("salario").toString()));
         var auxilioTransporte = BigDecimal.ZERO;
 
         if(salarioReq.compareTo(BigDecimal.valueOf(2600000.00)) < 0){
@@ -95,11 +91,11 @@ public class CandidatoService {
                     .persona(candidato.getId().getPersona())
                     .cargo(candidato.getId().getVacante().getCargo())
                     .salario(null)
-                    .sucursal(sucRepository.findById((Integer)contratoRequest.get("id_sucursal")).orElseThrow())
-                    .tipo(Tipo.valueOf((String) contratoRequest.get("tipo")))
-                    .fecha_inicio(stringToDate((String) contratoRequest.get("fecha_inicio")))
+                    .sucursal(sucRepository.findById((Integer)request.get("id_sucursal")).orElseThrow())
+                    .tipo(Tipo.valueOf((String) request.get("tipo")))
+                    .fecha_inicio(stringToDate((String) request.get("fecha_inicio")))
                     .fecha_fin(null)
-                    .contratacion_mision_plus((Boolean)contratoRequest.get("contratacion_mision_plus"))
+                    .contratacion_mision_plus((Boolean)request.get("contratacion_mision_plus"))
                     .ultimo_pago_vacaciones(null)
                     .ultimo_pago_cesantias(null)
                     .estado(Boolean.TRUE)
