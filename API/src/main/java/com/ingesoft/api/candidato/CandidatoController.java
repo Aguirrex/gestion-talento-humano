@@ -20,6 +20,7 @@ public class CandidatoController {
         try {
             return ResponseEntity.ok(service.createCandidato(request));
         } catch (Exception e){
+
             return ResponseEntity.badRequest().body(BadRequestsResponse.builder().message("ERR_CANDIDATO_DATA").build());
         }
     }
@@ -50,7 +51,7 @@ public class CandidatoController {
         try {
             return ResponseEntity.ok(service.updateCandidato(request));
         } catch (Exception e){
-            
+  
             return ResponseEntity.badRequest().body(BadRequestsResponse.builder().message("ERR_CANDIDATO_DATA").build());
         }
     }
