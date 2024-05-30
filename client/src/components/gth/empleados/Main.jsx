@@ -204,7 +204,7 @@ const Main = () => {
       width: 150,
       editable: getEditable(usuario),
       type: 'singleSelect',
-      options: Object.values(tiposContrato).map(tipo => ({value: tipo, label: tipo}))
+      valueOptions: Object.values(tiposContrato).map(tipo => ({value: tipo, label: tipo}))
     },
     {
       field: 'fecha_inicio',

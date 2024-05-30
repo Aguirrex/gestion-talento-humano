@@ -19,12 +19,15 @@ opcionesMenuLateral
 
 
 const getTituloPorRuta = (opciones, ruta) => {
+  const opcion = opciones.find(opcion => opcion.ruta === ruta);
+  if (opcion) return opcion.texto;
   for (let i = 0; i < opciones.length; i++) {
-    console.log(opciones[i].ruta, ruta);
-    if (opciones[i]?.ruta === ruta) return opciones[i].texto;
-    if (opciones[i]?.children) return getTituloPorRuta(opciones[i].children, ruta);
+    if (opciones[i].children) {
+      const opcionHijo = opciones[i].children.find(opcion => opcion.ruta === ruta);
+      if (opcionHijo) return opcionHijo.texto;
+    }
   }
-  return 'GTH'
+  return 'GTH';
 };
 
 const widthMenuLateral = 270;
