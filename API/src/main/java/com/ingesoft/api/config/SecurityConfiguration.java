@@ -47,6 +47,10 @@ public class SecurityConfiguration {
                             .requestMatchers(GET,"/vacantes").hasAnyAuthority(GERENCIA.name(),RH.name(), PSICOLOGIA.name())
                             .requestMatchers(PUT,"/vacante/{id}").hasAnyAuthority(GERENCIA.name(),RH.name())
                             .requestMatchers(DELETE,"/vacante/{id}").hasAnyAuthority(GERENCIA.name(),RH.name())
+                            .requestMatchers(POST,"/candidato").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET,"/candidatos").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET,"/candidato/{id_vacante}/{id_persona}").hasAnyAuthority(RH.name(), PSICOLOGIA.name(), GERENCIA.name())
+                            .requestMatchers(PUT,"/candidato").hasAnyAuthority(RH.name())
                             .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
