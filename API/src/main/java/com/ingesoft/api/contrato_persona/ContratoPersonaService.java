@@ -55,8 +55,8 @@ public class ContratoPersonaService {
                 .sucursal(sucursal)
                 .tipo(Tipo.valueOf(request.get("tipo").toString()))
                 .fecha_inicio(fechaInicioDate)
-                .contratacion_mision_plus((Boolean) request.get("contratacion_mision_plus"))
-                .estado((Boolean) request.get("estado"))
+                .contratacion_mision_plus(false)
+                .estado(true)
                 .build();
 
         salario.setContratoPersona(empleado);
