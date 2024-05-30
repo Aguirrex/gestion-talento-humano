@@ -25,10 +25,22 @@ public class CargoController {
             }
         }
 
-        @GetMapping("/:{id}")
+        @GetMapping("/{id}")
         public ResponseEntity<?> getCargo(@PathVariable String id){
             try {
                 return ResponseEntity.ok(service.getCargo(Integer.parseInt(id)));
+            } catch (Exception e){
+                return ResponseEntity.badRequest().body(BadRequestsResponse.builder().message("ERR_CARGO_DATA"));
+            }
+        }
+
+        @PutMapping("/{id}")
+        public ResponseEntity<?> updateCargo(
+                @PathVariable String id,
+                @RequestBody Map<String, Object> request
+                ){
+            try {
+                return ResponseEntity.ok(service.updateCargo(request, Integer.parseInt(id)));
             } catch (Exception e){
                 return ResponseEntity.badRequest().body(BadRequestsResponse.builder().message("ERR_CARGO_DATA"));
             }

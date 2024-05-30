@@ -36,10 +36,10 @@ const Login = () => {
     onSubmit: (inputs) => {
       // setCargando(true);
       fetchApi().post('/auth/login', {
-        data: {
-          dni: inputs.dni,
-          password: inputs.password
-        }
+
+        dni: inputs.dni,
+        password: inputs.password
+        
       })
       .then(response => {
         // console.log(response);

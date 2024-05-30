@@ -27,7 +27,7 @@ public class SucursalController {
         }
     }
 
-    @GetMapping("/:{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getSucursal(@PathVariable String id){
         try {
             return ResponseEntity.ok(service.getSucursal(parseInt(id)));
@@ -36,7 +36,7 @@ public class SucursalController {
         }
     }
 
-    @PutMapping("/:{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateSucursal(
             @PathVariable String id,
             @RequestBody Map<String, Object> request
@@ -48,7 +48,7 @@ public class SucursalController {
         }
     }
 
-    @DeleteMapping("/:{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSucursal(@PathVariable String id){
         try {
             return ResponseEntity.ok(service.deleteSucursal(parseInt(id)));

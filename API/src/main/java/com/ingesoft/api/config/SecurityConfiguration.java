@@ -12,8 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.ingesoft.api.usuario.Tipo.GERENCIA;
-import static com.ingesoft.api.usuario.Tipo.RH;
+import static com.ingesoft.api.usuario.Tipo.*;
 import static org.springframework.http.HttpMethod.*;
 
 @Configuration
@@ -36,14 +35,36 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(req ->
                     req.requestMatchers(WHITE_LIST_URL)
                             .permitAll()
-                            .requestMatchers("/vacante").hasAuthority(GERENCIA.name())
+                            .requestMatchers(POST,"/vacante").hasAuthority(GERENCIA.name())
                             .requestMatchers(POST,"/sucursal/**").hasAnyAuthority(GERENCIA.name(),RH.name())
                             .requestMatchers(PUT,"/sucursal/**").hasAnyAuthority(GERENCIA.name(),RH.name())
                             .requestMatchers(GET,"/sucursales").hasAnyAuthority(GERENCIA.name(),RH.name())
                             .requestMatchers(DELETE,"/sucursal/**").hasAnyAuthority(GERENCIA.name(),RH.name())
-                            .requestMatchers(POST,"/cargo/**").hasAnyAuthority(GERENCIA.name())
+                            .requestMatchers(POST,"/cargo").hasAnyAuthority(GERENCIA.name())
+                            .requestMatchers(PUT,"/cargo/**").hasAnyAuthority(GERENCIA.name(), RH.name())
                             .requestMatchers(GET,"/cargos").hasAnyAuthority(GERENCIA.name(),RH.name())
                             .requestMatchers(GET,"/cargos/**").hasAnyAuthority(GERENCIA.name())
+                            .requestMatchers(GET,"/vacantes").hasAnyAuthority(GERENCIA.name(),RH.name(), PSICOLOGIA.name())
+                            .requestMatchers(PUT,"/vacante/{id}").hasAnyAuthority(GERENCIA.name(),RH.name())
+                            .requestMatchers(DELETE,"/vacante/{id}").hasAnyAuthority(GERENCIA.name(),RH.name())
+                            .requestMatchers(POST, "/persona").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET, "/personas").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET, "/persona/{id}").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET, "/personas/siguienteId").hasAnyAuthority(RH.name())
+                            .requestMatchers(PUT, "/persona/{id}").hasAnyAuthority(RH.name())
+                            .requestMatchers(DELETE, "/persona/{id}").hasAnyAuthority(RH.name())
+                            .requestMatchers(POST,"/candidato").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET,"/candidatos").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET,"/candidato/{id_vacante}/{id_persona}").hasAnyAuthority(RH.name(), PSICOLOGIA.name(), GERENCIA.name())
+                            .requestMatchers(PUT,"/candidato").hasAnyAuthority(RH.name())
+                            .requestMatchers(PUT, "/empleado").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET, "/empleados").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET, "/empleado/{id}").hasAnyAuthority(RH.name(), GERENCIA.name())
+                            .requestMatchers(GET, "/empleado/siguienteId").hasAnyAuthority(RH.name())
+                            .requestMatchers(PUT, "/empleado/{id}").hasAnyAuthority(RH.name())
+                            .requestMatchers(POST,"/novedad").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET,"/novedades").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET,"/novedad/siguienteId").hasAnyAuthority(RH.name())
                             .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
