@@ -71,9 +71,19 @@ public class VacanteService {
 
     public Map<String, Object> updateVacante(Map<String, Object> request, Integer id){
         var vacante = vacRepository.findById(id).orElseThrow();
+
         vacante.setTitulo(request.get("titulo").toString());
         vacante.setDescripcion(request.get("descripcion").toString());
-//        vacante.setUrl_perfil(request.get("url_perfil").toString());
+        vacante.setCargo(carRepository.findById(Integer.parseInt(request.get("id_cargo").toString())).orElseThrow());
+
+        if (request.get("estado") == Boolean.FALSE){
+            vacante.setEstado(Boolean.FALSE);
+            vacante.setFecha_cierre(new Date());
+        }else{
+            vacante.setEstado(Boolean.TRUE);
+            vacante.setFecha_cierre(null);
+        }
+
         vacRepository.save(vacante);
 
         Map<String, Object> responseMap = new HashMap<>();
