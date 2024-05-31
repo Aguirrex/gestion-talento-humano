@@ -26,7 +26,6 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 //    private final LogoutHandler logoutHandler;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -57,14 +56,14 @@ public class SecurityConfiguration {
                             .requestMatchers(GET,"/candidatos").hasAnyAuthority(RH.name())
                             .requestMatchers(GET,"/candidato/{id_vacante}/{id_persona}").hasAnyAuthority(RH.name(), PSICOLOGIA.name(), GERENCIA.name())
                             .requestMatchers(PUT,"/candidato").hasAnyAuthority(RH.name())
-                            .requestMatchers(PUT, "/empleado").hasAnyAuthority(RH.name())
+                            .requestMatchers(POST, "/empleado").hasAnyAuthority(RH.name())
                             .requestMatchers(GET, "/empleados").hasAnyAuthority(RH.name())
                             .requestMatchers(GET, "/empleado/{id}").hasAnyAuthority(RH.name(), GERENCIA.name())
-                            .requestMatchers(GET, "/empleado/siguienteId").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET, "/empleados/siguienteId").hasAnyAuthority(RH.name())
                             .requestMatchers(PUT, "/empleado/{id}").hasAnyAuthority(RH.name())
                             .requestMatchers(POST,"/novedad").hasAnyAuthority(RH.name())
                             .requestMatchers(GET,"/novedades").hasAnyAuthority(RH.name())
-                            .requestMatchers(GET,"/novedad/siguienteId").hasAnyAuthority(RH.name())
+                            .requestMatchers(GET,"/novedades/siguienteId").hasAnyAuthority(RH.name())
                             .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

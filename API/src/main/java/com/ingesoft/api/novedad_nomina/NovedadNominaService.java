@@ -19,7 +19,7 @@ public class NovedadNominaService {
     final PeriodoQuincenalRepository periodoQuincenalRepository;
 
     public Map<String, Object> createNovedadNomina(Map<String, Object> request){
-
+        System.out.println(request);
         var contratoPersona = contratoPersonaRepository.findById(Long.valueOf((Integer)request.get("id_contrato"))).orElseThrow();
         var periodoQuincenal = periodoQuincenalRepository.findById((Integer)request.get("id_periodo_quincenal")).orElseThrow();
 
@@ -28,7 +28,7 @@ public class NovedadNominaService {
                 .periodoQuincenal(periodoQuincenal)
                 .tipo(Tipo.valueOf((String)request.get("tipo")))
                 .cantidad(request.get("cantidad") != null ? Short.valueOf(request.get("cantidad").toString()) : null)
-                .valor(BigDecimal.valueOf((Double)request.get("valor")))
+                .valor(BigDecimal.valueOf(Double.parseDouble(request.get("valor").toString())))
                 .es_descuento((Boolean)request.get("es_descuento"))
                 .detalles((String)request.get("detalles"))
                 .build();

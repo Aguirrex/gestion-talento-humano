@@ -2,66 +2,79 @@ import React, { useEffect } from 'react';
 import { Grid, Box, Link } from '@mui/material';
 import { BreadcrumbsCustom, TablaEditable } from '../../common/Personalizados';
 import { useUsuarioContext } from '../../../customHooks/UsuarioProvider';
-import { opcionesValidasTabla, tiposUsuario } from '../../common/constantes';
+import { opcionesValidasTabla, tiposNovedad, tiposUsuario } from '../../common/constantes';
 import { fetchApi } from '../../../tools/connectionApi';
 import { AlertaFlotante } from '../../common/Alertas';
 
-const modeloVacante = {
+import dayjs from 'dayjs';
+
+const modeloNovedad = {
   id: 0,
-  titulo: '',
-  id_cargo: 0,
-  url_perfil: '',
-  fecha_apertura: '',
-  fecha_cierre: '',
-  estado: true
+  id_contrato: 0,
+  id_periodo_quincenal: 0,
+  tipo: tiposNovedad.HORAS_EXTRAS,
+  cantidad: 0,
+  valor: 0,
+  es_descuento: false,
+  detalles: ''
 };
 
-const vacantesInicial = [
-  { id: 0, 'titulo': 'Vacante 1', 'id_cargo': 0, 'fecha_apertura': '2021-10-01', 'fecha_cierre': '2021-10-31', 'estado': false },
-  { id: 1, 'titulo': 'Vacante 2', 'id_cargo': 1, 'url_perfil': '', 'fecha_apertura': '2021-10-01', 'fecha_cierre': null, 'estado': true },
-  { id: 2, 'titulo': 'Vacante 3', 'id_cargo': 2, 'url_perfil': 'https://www.google.com', 'fecha_apertura': '2021-10-01', 'fecha_cierre': '2021-10-31', 'estado': false },
-  { id: 3, 'titulo': 'Vacante 4', 'id_cargo': 3, 'url_perfil': null, 'fecha_apertura': '2021-10-01', 'fecha_cierre': null, 'estado': true },
+const novedadesInicial = [
+  // { id: 1, id_contrato: 1, id_periodo_quincenal: 1, tipo: tiposNovedad.HORAS_EXTRAS, cantidad: 2, valor: 10000, es_descuento: false, detalles: 'Horas extras trabajadas' },
 ];
 
-const cargosInicial = [
-  { value: 0, label: 'Cargo 1' },
-  { value: 1, label: 'Cargo 2' },
-  { value: 2, label: 'Cargo 3' },
-  { value: 3, label: 'Cargo 4' },
-  { value: 4, label: 'Cargo 5' },
-  { value: 5, label: 'Cargo 6' }
+const empleadosInicial = [
+  // { value: 0, label: '123456789' },
+  // { value: 1, label: '435543434' },
+  // { value: 2, label: '716426341' },
+];
+
+const periodosQuincenalesInicial = [
+  // { value: 0, label: '1° Quin. Mayo 2024'},
+  // { value: 1, label: '2° Quin. Mayo 2024'},
+  // { value: 2, label: '1° Quin. Junio 2024'},
+  // { value: 3, label: '2° Quin. Junio 2024'},
+  // { value: 4, label: '1° Quin. Julio 2024'},
+  // { value: 5, label: '2° Quin. Julio 2024'},
 ];
 
 const getPermisos = (usuario) => {
-  return (usuario?.tipo === tiposUsuario.GERENCIA) 
-    ? [opcionesValidasTabla.EDITAR] 
+  return (usuario?.tipo === tiposUsuario.RH)
+    ? [opcionesValidasTabla.AGREGAR]
     : [];
 }
 
 const getEditable = (usuario) => {
-  return (usuario?.tipo === tiposUsuario.GERENCIA) 
+  return (usuario?.tipo === tiposUsuario.RH) 
     ? true 
     : false;
 }
 
+const formatoMoneda = new Intl.NumberFormat('es-CO', {
+  style: 'currency',
+  currency: 'COP',
+  minimumFractionDigits: 2
+});
+
 const Main = () => {
 
   const { usuario } = useUsuarioContext();
-  const [vacantes, setVacantes] = React.useState(vacantesInicial);
+  const [novedades, setNovedades] = React.useState(novedadesInicial);
   const [alerta, setAlerta] = React.useState({mensaje: '', severity: 'warning', open: false});
-  const [cargos, setCargos] = React.useState(cargosInicial);
+  const [empleados, setEmpleados] = React.useState(empleadosInicial);
+  const [periodosQuincenales, setPeriodosQuincenales] = React.useState(periodosQuincenalesInicial);
 
   const opcionesValidas = getPermisos(usuario);
 
-  const getCargos = async () => {
+  const getEmpleados = async () => {
     try {
-      const response = await fetchApi().get('/cargos');
+      const response = await fetchApi().get('/empleados');
       if (response?.data) {
-        const { cargos: listaCargos } = response.data;
-        setAlerta(alerta => ({...alerta, mensaje: 'Cargos cargados exitosamente', severity: 'success', open: true}));
-        return listaCargos;
+        const { empleados: listaEmpleados } = response.data;
+        setAlerta(alerta => ({...alerta, mensaje: 'Empleados cargados exitosamente', severity: 'success', open: true}));
+        return listaEmpleados.filter(empleado => empleado.estado === true);
       } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar los cargos', severity: 'error', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar los empleados', severity: 'error', open: true}));
         console.log(response);
       }
     } catch (err) {
@@ -69,7 +82,31 @@ const Main = () => {
       if(err.response) {
         mensajeError = err.response.data.message;
       } else {
-        mensajeError = 'Error al solicitar los cargos al servidor';
+        mensajeError = 'Error al solicitar los empleados al servidor';
+      }
+      setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
+    }
+
+    return false;
+  }
+
+  const getPeriodosQuincenales = async () => {
+    try {
+      const response = await fetchApi().get('/periodos_quincenales');
+      if (response?.data) {
+        const { periodos_quincenales: listaPeriodosQuincenales } = response.data;
+        setAlerta(alerta => ({...alerta, mensaje: 'Peridos quincenales cargados exitosamente', severity: 'success', open: true}));
+        return listaPeriodosQuincenales;
+      } else {
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar los periodos quincenales', severity: 'error', open: true}));
+        console.log(response);
+      }
+    } catch (err) {
+      let mensajeError = '';
+      if(err.response) {
+        mensajeError = err.response.data.message;
+      } else {
+        mensajeError = 'Error al solicitar los periodos quincenales al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
     }
@@ -79,78 +116,75 @@ const Main = () => {
 
   const encabezadosTabla = [
     {
-      field: 'titulo',
-      headerName: 'Título',
-      minWidth: 250,
-      maxWidth: 400,
-      editable: getEditable(usuario)
-    },
-    {
-      field: 'id_cargo',
-      headerName: 'Cargo',
-      minWidth: 200,
-      maxWidth: 400,
-      editable: getEditable(usuario),
+      field: 'id_contrato',
+      headerName: 'DNI Empleado',
       type: 'singleSelect',
-      valueOptions: cargos
-    },
-    {
-      field: 'descripcion',
-      headerName: 'Descripción',
-      minWidth: 250,
-      maxWidth: 400,
-      editable: getEditable(usuario)
-    },
-    // {
-    //   field: 'url_perfil',
-    //   headerName: 'Perfil',
-    //   minWidth: 150,
-    //   maxWidth: 400,
-    //   editable: false,
-    //   renderCell: (params) => (
-    //     params?.value ? <Link href={params.value} target='_blank' rel='noopener'>Perfil</Link> : null
-    //   )
-    // },
-    {
-      field: 'fecha_apertura',
-      headerName: 'Apertura',
       width: 150,
-      editable: false,
-      type: 'date',
-      valueGetter: value => value && new Date(value)
-    },
-    {
-      field: 'fecha_cierre',
-      headerName: 'Cierre',
-      width: 150,
-      editable: false,
-      type: 'date',
-      valueGetter: value => value && new Date(value)
-    },
-    {
-      field: 'estado',
-      headerName: 'Estado',
-      width: 100,
       editable: getEditable(usuario),
-      type: 'boolean'
-    }
+      valueOptions: empleados
+    },
+    {
+      field: 'id_periodo_quincenal',
+      headerName: 'Periodo Quincenal',
+      type: 'singleSelect',
+      width: 200,
+      editable: getEditable(usuario),
+      valueOptions: periodosQuincenales
+    },
+    {
+      field: 'tipo',
+      headerName: 'Tipo',
+      type: 'singleSelect',
+      width: 150,
+      editable: getEditable(usuario),
+      valueOptions: Object.values(tiposNovedad).map(tipo => ({value: tipo, label: tipo}))
+    },
+    {
+      field: 'cantidad',
+      headerName: 'Cantidad',
+      type: 'number',
+      width: 80,
+      editable: getEditable(usuario),
+    },
+    {
+      field: 'valor',
+      headerName: 'Valor',
+      type: 'number',
+      width: 150,
+      editable: getEditable(usuario),
+      valueFormatter: (value) => formatoMoneda.format(value)
+    },
+    {
+      field: 'es_descuento',
+      headerName: 'Es descuento',
+      type: 'boolean',
+      width: 150,
+      editable: getEditable(usuario),
+    },
+    {
+      field: 'detalles',
+      headerName: 'Detalles',
+      type: 'text',
+      width: 200,
+      editable: getEditable(usuario),
+    },
   ];
 
   
 
-  const getVacantes = async () => {
+  const getNovedades = async () => {
     try {
-      const response = await fetchApi().get('/vacantes');
+      const response = await fetchApi().get('/novedades');
       if (response?.data) {
-        const { vacantes: listaVacantes } = response.data;
-        setVacantes(
-          listaVacantes &&
-          listaVacantes
-            .map(vacante => ({...vacante, id: parseInt(vacante.id)}))
+        const { novedades: listaNovedades } = response.data;
+        setNovedades(
+          listaNovedades &&
+          listaNovedades
+            .map(novedad => ({...novedad, id: parseInt(novedad.id)}))
         );
-        setAlerta(alerta => ({...alerta, mensaje: 'Vacantes cargadas exitosamente', severity: 'success', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Novedades cargadas exitosamente', severity: 'success', open: true}));
       } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar las vacantes', severity: 'error', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar las novedades', severity: 'error', open: true}));
         console.log(response);
       }
     } catch (err) {
@@ -158,24 +192,25 @@ const Main = () => {
       if(err.response) {
         mensajeError = err.response.data.message;
       } else {
-        mensajeError = 'Error al solicitar las vacantes al servidor';
+        mensajeError = 'Error al solicitar las novedades al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
     }
   }
 
-  const postVacante = async (vacante) => {
-    const { titulo, descripcion, id_cargo } = vacante;
+  const postNovedad = async (novedad) => {
+    const { id_contrato, id_periodo_quincenal, tipo, cantidad, valor, es_descuento, detalles } = novedad;
 
     try {
-      const response = await fetchApi().post('/vacante', {
-        titulo, descripcion, id_cargo
+      const response = await fetchApi().post('/novedad', {
+        id_contrato, id_periodo_quincenal, tipo, cantidad, valor, es_descuento, detalles
       });
       if (response?.data) {
-        const { vacante: newVacante } = response.data;
-        setAlerta(alerta => ({...alerta, mensaje: `Vacante ${newVacante.titulo} creada exitosamente`, severity: 'success', open: true}));
+        console.log(response.data)
+        const { novedad: newNovedad } = response.data;
+        setAlerta(alerta => ({...alerta, mensaje: "Novedad creada exitosamente", severity: 'success', open: true}));
       }  else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al agregar la vacante', severity: 'error', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al agregar la novedad', severity: 'error', open: true}));
         console.log(response);
 
         return false;
@@ -185,7 +220,7 @@ const Main = () => {
       if(err.response) {
         mensajeError = err.response.data.message;
       } else {
-        mensajeError = 'Error al solicitar la creación de la vacante al servidor';
+        mensajeError = 'Error al solicitar la creación de la novedad al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
 
@@ -195,17 +230,17 @@ const Main = () => {
     return true;
   }
 
-  const putVacante = async (vacante) => {
-    const { id, titulo, descripcion } = vacante;
+  const putNovedad = async (novedad) => {
+    const { id, titulo, descripcion } = novedad;
 
     try {
-      const response = await fetchApi().put(`/vacante/${id}`, {
+      const response = await fetchApi().put(`/novedad/${id}`, {
         titulo, descripcion
       });
       if (response?.data) {
-        setAlerta(alerta => ({...alerta, mensaje: `Vacante modificado exitosamente`, severity: 'success', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: `Novedad modificado exitosamente`, severity: 'success', open: true}));
       } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al modificar la vacante', severity: 'error', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al modificar la novedad', severity: 'error', open: true}));
         console.log(response);
 
         return false;
@@ -214,12 +249,12 @@ const Main = () => {
       let mensajeError = '';
       if(err.response) {
         if (err.response.status === 400) {
-          mensajeError = 'Datos incorrectos para la modificación de la vacante';
+          mensajeError = 'Datos incorrectos para la modificación de la novedad';
         } else {
           mensajeError = err.response.data.message;
         }
       } else {
-        mensajeError = 'Error al solicitar la modificación de la vacante al servidor';
+        mensajeError = 'Error al solicitar la modificación de la novedad al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
 
@@ -229,15 +264,15 @@ const Main = () => {
     return true;
   }
 
-  const deleteVacante = async (vacante) => {
-    const { id } = vacante;
+  const deleteNovedad = async (novedad) => {
+    const { id } = novedad;
 
     try {
-      const response = await fetchApi().delete(`/vacante/${id}`);
+      const response = await fetchApi().delete(`/novedad/${id}`);
       if (response?.data) {
-        setAlerta(alerta => ({...alerta, mensaje: `Vacante descartada exitosamente`, severity: 'success', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: `Novedad descartada exitosamente`, severity: 'success', open: true}));
       } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al eliminar la vacante', severity: 'error', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al eliminar la novedad', severity: 'error', open: true}));
         console.log(response);
 
         return false;
@@ -246,12 +281,12 @@ const Main = () => {
       let mensajeError = '';
       if(err.response) {
         if (err.response.status === 400) {
-          mensajeError = 'Datos incorrectos para la eliminación de la vacante';
+          mensajeError = 'Datos incorrectos para la eliminación de la novedad';
         } else {
           mensajeError = err.response.data.message;
         }
       } else {
-        mensajeError = 'Error al solicitar la eliminación de la vacante al servidor';
+        mensajeError = 'Error al solicitar la eliminación de la novedad al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
 
@@ -263,12 +298,12 @@ const Main = () => {
 
   const siguienteId = async () => {
     try {
-      const response = await fetchApi().get('/vacantes/siguienteId');
+      const response = await fetchApi().get('/novedades/siguienteId');
       if (response?.data) {
-        const { siguiente_id_vacantes } = response.data;
-        return siguiente_id_vacantes;
+        const { siguiente_id_novedades } = response.data;
+        return siguiente_id_novedades;
       } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar el siguiente id de la vacante', severity: 'error', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar el siguiente id de la novedad', severity: 'error', open: true}));
         console.log(response);
 
         return false;
@@ -278,7 +313,7 @@ const Main = () => {
       if(err.response) {
         mensajeError = err.response.data.message;
       } else {
-        mensajeError = 'Error al solicitar el siguiente id de vacante al servidor';
+        mensajeError = 'Error al solicitar el siguiente id de novedad al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
 
@@ -288,17 +323,26 @@ const Main = () => {
 
 
   useEffect(() => {
-    getVacantes();
-    getCargos()
-      .then(cargos => {
-        console.log(cargos);
-        if (cargos) setCargos(cargos.map(cargo => ({value: cargo.id, label: cargo.nombre})));
-      })
+    getNovedades();
+    getEmpleados()
+      .then(empleados => {
+        console.log(empleados);
+        if (empleados) setEmpleados(empleados.map(empleado => ({value: empleado.id, label: empleado.dni})));
+      });
+    getPeriodosQuincenales()
+      .then(periodosQuincenales => {
+        console.log(periodosQuincenales);
+        if (periodosQuincenales) setPeriodosQuincenales(periodosQuincenales.map(periodoQuincenal => ({
+          value: periodoQuincenal.id, 
+          label: `${periodoQuincenal.periodo}° Quin. ${dayjs(new Date(periodoQuincenal.year, periodoQuincenal.mes)).format('MMMM YYYY')}`
+        })));
+      });
   }, []);
 
   useEffect(() => {
-    console.log(cargos);
-  }, [cargos]);
+    console.log(empleados);
+    console.log(periodosQuincenales);
+  }, [empleados, periodosQuincenales]);
 
 
 
@@ -312,16 +356,16 @@ const Main = () => {
           <Grid item xs={12}>
             <Box height='calc(99vh - 140px)'>
               <TablaEditable 
-                nombreModelo='vacante'
+                nombreModelo='novedad'
                 encabezados={encabezadosTabla}
                 opcionesValidas={opcionesValidas}
-                datos={vacantes}
-                setDatos={setVacantes}
-                modelo={modeloVacante}
+                datos={novedades}
+                setDatos={setNovedades}
+                modelo={modeloNovedad}
                 siguienteId={siguienteId}
-                onAgregar={postVacante}
-                onEditar={putVacante}
-                onEliminar={deleteVacante}
+                onAgregar={postNovedad}
+                onEditar={putNovedad}
+                onEliminar={deleteNovedad}
                 sx={{ bgcolor: 'background.paper' }}
               />
             </Box>

@@ -28,7 +28,7 @@ const personasInicial = [
 
 const getPermisos = (usuario) => {
   return (usuario?.tipo === tiposUsuario.RH) 
-    ? [opcionesValidasTabla.EDITAR] 
+    ? [opcionesValidasTabla.EDITAR, opcionesValidasTabla.AGREGAR] 
     : [];
 }
 

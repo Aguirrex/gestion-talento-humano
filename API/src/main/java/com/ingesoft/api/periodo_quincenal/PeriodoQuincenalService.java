@@ -17,7 +17,7 @@ public class PeriodoQuincenalService {
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("message", "OK");
-        responseMap.put("periodosQuincenales", periodosQuincenales.stream().map(this::PeriodoQuincenalMap));
+        responseMap.put("periodos_quincenales", periodosQuincenales.stream().map(this::PeriodoQuincenalMap));
 
         return responseMap;
     }

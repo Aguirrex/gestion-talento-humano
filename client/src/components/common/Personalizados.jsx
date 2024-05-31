@@ -149,7 +149,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
     filaEliminar.current = null;
   };
 
-  const procesarCambiosFila = async (newFila) => {
+  const procesarCambiosFila = (newFila) => {
     let filaModif = { ...newFila, isNew: newFila.isNew ? true : false};
 
     setCargando(true);
@@ -178,7 +178,6 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
     });
 
     return filaModif;
-    
   };
 
   const manejarCambioModos = (newModos) => {
@@ -270,7 +269,7 @@ const TablaEditable = ({ nombreModelo, encabezados, datos, setDatos, opcionesVal
           }
         }}
         slots={{
-          toolbar: TablaToolbar
+          toolbar: opcionesValidas.includes(opcionesValidasTabla.AGREGAR) ? TablaToolbar : null
         }}
         sx={{
           ...sx,

@@ -34,7 +34,7 @@ const cargosInicial = [
 
 const getPermisos = (usuario) => {
   return (usuario?.tipo === tiposUsuario.GERENCIA) 
-    ? [opcionesValidasTabla.EDITAR] 
+    ? [opcionesValidasTabla.EDITAR, opcionesValidasTabla.AGREGAR] 
     : [];
 }
 
@@ -196,12 +196,11 @@ const Main = () => {
   }
 
   const putVacante = async (vacante) => {
-    const { id, titulo, descripcion, id_cargo, estado } = vacante;
+    const { id, titulo, descripcion, estado, id_cargo } = vacante;
 
-    console.log(vacante)
     try {
       const response = await fetchApi().put(`/vacante/${id}`, {
-        titulo, descripcion, id_cargo, estado
+        titulo, descripcion, estado, id_cargo
       });
       if (response?.data) {
         setAlerta(alerta => ({...alerta, mensaje: `Vacante modificado exitosamente`, severity: 'success', open: true}));

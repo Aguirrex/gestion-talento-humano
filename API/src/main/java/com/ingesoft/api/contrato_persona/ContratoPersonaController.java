@@ -17,9 +17,10 @@ public class ContratoPersonaController {
     @PostMapping("/empleado")
     public ResponseEntity<?> createEmpleado(@RequestBody Map<String, Object> request){
         try {
+            System.out.println(request);
             return ResponseEntity.ok(service.createEmpleado(request));
         } catch (Exception e){
-            e.printStackTrace();
+            System.out.println(e);
             return ResponseEntity.badRequest().body(BadRequestsResponse.builder().message("ERR_EMPLEADO_DATA").build());
         }
     }
@@ -42,7 +43,7 @@ public class ContratoPersonaController {
         }
     }
 
-    @GetMapping("/empleado/siguienteId")
+    @GetMapping("/empleados/siguienteId")
     public ResponseEntity<?> siguienteId(){
         try {
             return ResponseEntity.ok(service.siguienteId());

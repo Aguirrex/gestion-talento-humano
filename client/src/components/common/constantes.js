@@ -14,21 +14,19 @@ const opcionesMenuLateral = [
   {icono: HowToRegIcon, texto: 'Selección', children: [
     {icono: BadgeIcon, texto: 'Vacantes', usuarios: [tiposUsuario.GERENCIA], ruta: '/gth/seleccion/vacantes'},
     {icono: HailIcon, texto: 'Candidatos', usuarios: [tiposUsuario.RH], ruta: '/gth/seleccion/candidatos'},
-    // {icono: HailIcon, texto: 'Entrevistas', ruta: '/gth/seleccion/entrevistas'},
   ]},
   {icono: GroupIcon, texto: 'Empleados', usuarios: [tiposUsuario.RH], children: [
-    {icono: ListIcon, texto: 'Listado', ruta: '/gth/empleados/listado'},
-    // {icono: HailIcon, texto: 'Contratos', ruta: '/gth/empleados/contratos'},
+    {icono: ListIcon, texto: 'Listado Empleados', ruta: '/gth/empleados/listado'},
     {icono: FiberNewIcon, texto: 'Novedades', ruta: '/gth/empleados/novedades'},
   ]},
   {icono: AttachMoneyIcon, texto: 'Nómina', usuarios: [tiposUsuario.RH, tiposUsuario.CONTABILIDAD, tiposUsuario.GERENCIA], ruta: '/gth/nomina'},
-  {icono: PersonOffIcon, texto: 'Liquidación', usuarios: [tiposUsuario.RH], ruta: '/gth/liquidacion'},
-  // {icono: HailIcon, texto: 'Certificados', ruta: '/gth/certificados'},
+  // {icono: PersonOffIcon, texto: 'Liquidación', usuarios: [tiposUsuario.RH], ruta: '/gth/liquidacion'},
 ];
 
 const opcionesValidasTabla = {
   EDITAR: 'editar',
-  ELIMINAR: 'eliminar'
+  ELIMINAR: 'eliminar',
+  AGREGAR: 'agregar',
 };
 
 const tiposDocumento = {
@@ -50,11 +48,24 @@ const tiposContrato = {
   APRENDIZAJE: 'APRENDIZAJE',
 };
 
+const tiposNovedad = {
+  RODAMIENTO: 'RODAMIENTO', 
+  FONDO: 'FONDO_CRECER', 
+  COMISION: 'COMISIÓN', 
+  BONIFICACION: 'BONIFICACIÓN', 
+  HORAS_EXTRAS: 'HORAS_EXTRAS', 
+  INCAPACIDAD: 'INCAPACIDAD', 
+  PRIMA: 'PRIMA', 
+  VACACIONES: 'VACACIONES', 
+  OTRO: 'OTRO'
+};
+
 export { 
   opcionesMenuLateral, 
   opcionesValidasTabla, 
   tiposUsuario,
   tiposDocumento,
   accionesCandidato,
-  tiposContrato
+  tiposContrato,
+  tiposNovedad
 };

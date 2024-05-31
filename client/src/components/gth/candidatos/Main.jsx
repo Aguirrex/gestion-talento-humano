@@ -63,7 +63,7 @@ const sucursalesInicial = [
 
 const getPermisos = (usuario) => {
   return (usuario?.tipo === tiposUsuario.RH) 
-    ? [opcionesValidasTabla.ELIMINAR] 
+    ? [opcionesValidasTabla.ELIMINAR, opcionesValidasTabla.AGREGAR] 
     : [];
 }
 

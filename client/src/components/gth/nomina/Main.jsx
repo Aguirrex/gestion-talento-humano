@@ -5,41 +5,36 @@ import { useUsuarioContext } from '../../../customHooks/UsuarioProvider';
 import { opcionesValidasTabla, tiposUsuario } from '../../common/constantes';
 import { fetchApi } from '../../../tools/connectionApi';
 import { AlertaFlotante } from '../../common/Alertas';
+import dayjs from 'dayjs';
 
-const modeloVacante = {
+const modeloNomina = {
   id: 0,
-  titulo: '',
-  id_cargo: 0,
-  url_perfil: '',
-  fecha_apertura: '',
-  fecha_cierre: '',
-  estado: true
+  id_periodo_quincenal: 0,
+  url_nomina_pdf: '',
+  url_nomina_excel: '',
 };
 
-const vacantesInicial = [
-  { id: 0, 'titulo': 'Vacante 1', 'id_cargo': 0, 'fecha_apertura': '2021-10-01', 'fecha_cierre': '2021-10-31', 'estado': false },
-  { id: 1, 'titulo': 'Vacante 2', 'id_cargo': 1, 'url_perfil': '', 'fecha_apertura': '2021-10-01', 'fecha_cierre': null, 'estado': true },
-  { id: 2, 'titulo': 'Vacante 3', 'id_cargo': 2, 'url_perfil': 'https://www.google.com', 'fecha_apertura': '2021-10-01', 'fecha_cierre': '2021-10-31', 'estado': false },
-  { id: 3, 'titulo': 'Vacante 4', 'id_cargo': 3, 'url_perfil': null, 'fecha_apertura': '2021-10-01', 'fecha_cierre': null, 'estado': true },
+const nominasInicial = [
+  { id: 0, id_periodo_quincenal: 0, url_nomina_excel: 'localhost:8080/files/nomina1.xlsx'},
 ];
 
-const cargosInicial = [
-  { value: 0, label: 'Cargo 1' },
-  { value: 1, label: 'Cargo 2' },
-  { value: 2, label: 'Cargo 3' },
-  { value: 3, label: 'Cargo 4' },
-  { value: 4, label: 'Cargo 5' },
-  { value: 5, label: 'Cargo 6' }
+const periodosQuincenalesInicial = [
+  { value: 0, label: '1° Quin. Mayo 2024'},
+  { value: 1, label: '2° Quin. Mayo 2024'},
+  { value: 2, label: '1° Quin. Junio 2024'},
+  { value: 3, label: '2° Quin. Junio 2024'},
+  { value: 4, label: '1° Quin. Julio 2024'},
+  { value: 5, label: '2° Quin. Julio 2024'},
 ];
 
 const getPermisos = (usuario) => {
-  return (usuario?.tipo === tiposUsuario.GERENCIA) 
-    ? [opcionesValidasTabla.EDITAR] 
-    : [];
+  return (usuario?.tipo === tiposUsuario.RH)
+  ? [opcionesValidasTabla.AGREGAR]
+  : [];
 }
 
 const getEditable = (usuario) => {
-  return (usuario?.tipo === tiposUsuario.GERENCIA) 
+  return (usuario?.tipo === tiposUsuario.RH) 
     ? true 
     : false;
 }
@@ -47,21 +42,21 @@ const getEditable = (usuario) => {
 const Main = () => {
 
   const { usuario } = useUsuarioContext();
-  const [vacantes, setVacantes] = React.useState(vacantesInicial);
+  const [nominas, setNominas] = React.useState(nominasInicial);
   const [alerta, setAlerta] = React.useState({mensaje: '', severity: 'warning', open: false});
-  const [cargos, setCargos] = React.useState(cargosInicial);
+  const [periodosQuincenales, setPeriodosQuincenales] = React.useState(periodosQuincenalesInicial);
 
   const opcionesValidas = getPermisos(usuario);
 
-  const getCargos = async () => {
+  const getPeriodosQuincenales = async () => {
     try {
-      const response = await fetchApi().get('/cargos');
+      const response = await fetchApi().get('/periodos_quincenales');
       if (response?.data) {
-        const { cargos: listaCargos } = response.data;
-        setAlerta(alerta => ({...alerta, mensaje: 'Cargos cargados exitosamente', severity: 'success', open: true}));
-        return listaCargos;
+        const { periodos_quincenales: listaPeriodosQuincenales } = response.data;
+        setAlerta(alerta => ({...alerta, mensaje: 'Peridos quincenales cargados exitosamente', severity: 'success', open: true}));
+        return listaPeriodosQuincenales;
       } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar los cargos', severity: 'error', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar los periodos quincenales', severity: 'error', open: true}));
         console.log(response);
       }
     } catch (err) {
@@ -69,7 +64,7 @@ const Main = () => {
       if(err.response) {
         mensajeError = err.response.data.message;
       } else {
-        mensajeError = 'Error al solicitar los cargos al servidor';
+        mensajeError = 'Error al solicitar los periodos quincenales al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
     }
@@ -79,78 +74,48 @@ const Main = () => {
 
   const encabezadosTabla = [
     {
-      field: 'titulo',
-      headerName: 'Título',
-      minWidth: 250,
-      maxWidth: 400,
-      editable: getEditable(usuario)
-    },
-    {
-      field: 'id_cargo',
-      headerName: 'Cargo',
-      minWidth: 200,
-      maxWidth: 400,
+      field: 'id_periodo_quincenal',
+      headerName: 'Periodo Quincenal',
+      width: 200,
       editable: getEditable(usuario),
       type: 'singleSelect',
-      valueOptions: cargos
-    },
-    {
-      field: 'descripcion',
-      headerName: 'Descripción',
-      minWidth: 250,
-      maxWidth: 400,
-      editable: getEditable(usuario)
+      valueOptions: periodosQuincenales
     },
     // {
-    //   field: 'url_perfil',
-    //   headerName: 'Perfil',
-    //   minWidth: 150,
-    //   maxWidth: 400,
+    //   field: 'url_nomina_pdf',
+    //   headerName: 'Nómina PDF',
+    //   width: 200,
     //   editable: false,
     //   renderCell: (params) => (
-    //     params?.value ? <Link href={params.value} target='_blank' rel='noopener'>Perfil</Link> : null
+    //     params?.value ? <Link href={params.value} target='_blank' rel='noopener'>PDF</Link> : null
     //   )
     // },
     {
-      field: 'fecha_apertura',
-      headerName: 'Apertura',
-      width: 150,
+      field: 'url_nomina_excel',
+      headerName: 'Nómina Excel',
+      width: 200,
       editable: false,
-      type: 'date',
-      valueGetter: value => value && new Date(value)
+      renderCell: (params) => (
+        params?.value ? <Link download href={params.value}>Excel</Link> : null
+      )
     },
-    {
-      field: 'fecha_cierre',
-      headerName: 'Cierre',
-      width: 150,
-      editable: false,
-      type: 'date',
-      valueGetter: value => value && new Date(value)
-    },
-    {
-      field: 'estado',
-      headerName: 'Estado',
-      width: 100,
-      editable: getEditable(usuario),
-      type: 'boolean'
-    }
   ];
 
   
 
-  const getVacantes = async () => {
+  const getNominas = async () => {
     try {
-      const response = await fetchApi().get('/vacantes');
+      const response = await fetchApi().get('/nominas');
       if (response?.data) {
-        const { vacantes: listaVacantes } = response.data;
-        setVacantes(
-          listaVacantes &&
-          listaVacantes
-            .map(vacante => ({...vacante, id: parseInt(vacante.id)}))
+        const { nominas: listaNominas } = response.data;
+        setNominas(
+          listaNominas &&
+          listaNominas
+            .map((nomina, index) => ({...nomina, id: index}))
         );
-        setAlerta(alerta => ({...alerta, mensaje: 'Vacantes cargadas exitosamente', severity: 'success', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Nóminas cargadas exitosamente', severity: 'success', open: true}));
       } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar las vacantes', severity: 'error', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar las nóminas', severity: 'error', open: true}));
         console.log(response);
       }
     } catch (err) {
@@ -158,24 +123,26 @@ const Main = () => {
       if(err.response) {
         mensajeError = err.response.data.message;
       } else {
-        mensajeError = 'Error al solicitar las vacantes al servidor';
+        mensajeError = 'Error al solicitar las nóminas al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
     }
   }
 
-  const postVacante = async (vacante) => {
-    const { titulo, descripcion, id_cargo } = vacante;
+  const postNomina = async (nomina) => {
+    const { id_periodo_quincenal } = nomina;
 
     try {
-      const response = await fetchApi().post('/vacante', {
-        titulo, descripcion, id_cargo
+      const response = await fetchApi().post('/nomina', {
+        id_periodo_quincenal
       });
       if (response?.data) {
-        const { vacante: newVacante } = response.data;
-        setAlerta(alerta => ({...alerta, mensaje: `Vacante ${newVacante.titulo} creada exitosamente`, severity: 'success', open: true}));
+        const { nomina: newNomina } = response.data;
+        setAlerta(alerta => ({...alerta, mensaje: `Nómina ${newNomina.titulo} creada exitosamente`, severity: 'success', open: true}));
+
+        return newNomina;
       }  else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al agregar la vacante', severity: 'error', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al agregar la nómina', severity: 'error', open: true}));
         console.log(response);
 
         return false;
@@ -185,120 +152,50 @@ const Main = () => {
       if(err.response) {
         mensajeError = err.response.data.message;
       } else {
-        mensajeError = 'Error al solicitar la creación de la vacante al servidor';
+        mensajeError = 'Error al solicitar la creación de la nómina al servidor';
       }
       setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
 
       return false;
     }
-
-    return true;
   }
 
-  const putVacante = async (vacante) => {
-    const { id, titulo, descripcion } = vacante;
-
-    try {
-      const response = await fetchApi().put(`/vacante/${id}`, {
-        titulo, descripcion
-      });
-      if (response?.data) {
-        setAlerta(alerta => ({...alerta, mensaje: `Vacante modificado exitosamente`, severity: 'success', open: true}));
-      } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al modificar la vacante', severity: 'error', open: true}));
-        console.log(response);
-
-        return false;
-      }
-    } catch (err) {
-      let mensajeError = '';
-      if(err.response) {
-        if (err.response.status === 400) {
-          mensajeError = 'Datos incorrectos para la modificación de la vacante';
-        } else {
-          mensajeError = err.response.data.message;
-        }
-      } else {
-        mensajeError = 'Error al solicitar la modificación de la vacante al servidor';
-      }
-      setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
-
-      return false;
-    }
-
-    return true;
+  const putNomina = async (nomina) => {
+    return false;
   }
 
-  const deleteVacante = async (vacante) => {
-    const { id } = vacante;
-
-    try {
-      const response = await fetchApi().delete(`/vacante/${id}`);
-      if (response?.data) {
-        setAlerta(alerta => ({...alerta, mensaje: `Vacante descartada exitosamente`, severity: 'success', open: true}));
-      } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al eliminar la vacante', severity: 'error', open: true}));
-        console.log(response);
-
-        return false;
-      }
-    } catch (err) {
-      let mensajeError = '';
-      if(err.response) {
-        if (err.response.status === 400) {
-          mensajeError = 'Datos incorrectos para la eliminación de la vacante';
-        } else {
-          mensajeError = err.response.data.message;
-        }
-      } else {
-        mensajeError = 'Error al solicitar la eliminación de la vacante al servidor';
-      }
-      setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
-
-      return false;
-    }
-
-    return true;
+  const deleteNomina = async (nomina) => {
+    return false;
   }
 
   const siguienteId = async () => {
-    try {
-      const response = await fetchApi().get('/vacantes/siguienteId');
-      if (response?.data) {
-        const { siguiente_id_vacantes } = response.data;
-        return siguiente_id_vacantes;
-      } else {
-        setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al solicitar el siguiente id de la vacante', severity: 'error', open: true}));
-        console.log(response);
-
-        return false;
-      }
-    } catch (err) {
-      let mensajeError = '';
-      if(err.response) {
-        mensajeError = err.response.data.message;
-      } else {
-        mensajeError = 'Error al solicitar el siguiente id de vacante al servidor';
-      }
-      setAlerta(alerta => ({...alerta, mensaje: mensajeError, severity: 'error', open: true}));
-
-      return false;
-    }
+    return nominas.length;
   }
 
 
   useEffect(() => {
-    getVacantes();
-    getCargos()
-      .then(cargos => {
-        console.log(cargos);
-        if (cargos) setCargos(cargos.map(cargo => ({value: cargo.id, label: cargo.nombre})));
-      })
+    const nominasPromise = getNominas();
+    const periodosPromise = getPeriodosQuincenales();
+    Promise.all([nominasPromise, periodosPromise]).then(([nominas, periodos]) => {
+      console.log(periodos);
+      if (periodosQuincenales && nominas && typeof nominas === Array) {
+        setPeriodosQuincenales(
+          periodosQuincenales
+            .filter(periodoQuincenal => nominas.find(nomina => nomina.id_periodo_quincenal === periodoQuincenal.value) === undefined)
+            .map(periodoQuincenal => {
+              return {
+                value: periodoQuincenal.id, 
+                label: `${periodoQuincenal.periodo}° Quin. ${dayjs(new Date(periodoQuincenal.year, periodoQuincenal.mes)).format('MMMM YYYY')}`
+              };
+            })
+        );
+      }
+    });
   }, []);
 
   useEffect(() => {
-    console.log(cargos);
-  }, [cargos]);
+    console.log(periodosQuincenales);
+  }, [periodosQuincenales]);
 
 
 
@@ -312,16 +209,16 @@ const Main = () => {
           <Grid item xs={12}>
             <Box height='calc(99vh - 140px)'>
               <TablaEditable 
-                nombreModelo='vacante'
+                nombreModelo='nomina'
                 encabezados={encabezadosTabla}
                 opcionesValidas={opcionesValidas}
-                datos={vacantes}
-                setDatos={setVacantes}
-                modelo={modeloVacante}
+                datos={nominas}
+                setDatos={setNominas}
+                modelo={modeloNomina}
                 siguienteId={siguienteId}
-                onAgregar={postVacante}
-                onEditar={putVacante}
-                onEliminar={deleteVacante}
+                onAgregar={postNomina}
+                onEditar={putNomina}
+                onEliminar={deleteNomina}
                 sx={{ bgcolor: 'background.paper' }}
               />
             </Box>
