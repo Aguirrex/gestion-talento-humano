@@ -18,7 +18,7 @@ const AuthUsuario = ({ children, tipoUsuario }) => {
       }
 
       try {
-        const response = await fetchApi(getTokenUsuario()).post('auth/autenticarToken');
+        const response = await fetchApi(getTokenUsuario()).post('/autenticarToken');
         console.log(response.data.usuario);
         if (response.data.usuario) {
           setUsuario(response.data.usuario);
