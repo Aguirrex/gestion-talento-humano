@@ -18,6 +18,10 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    setTokenUsuario(null);
+  }, []);
+
   const {
     errors: formikErrors, 
     getFieldProps: getFormikProps, 
@@ -36,10 +40,9 @@ const Login = () => {
     onSubmit: (inputs) => {
       // setCargando(true);
       fetchApi().post('/auth/login', {
-        data: {
           dni: inputs.dni,
           password: inputs.password
-        }
+        
       })
       .then(response => {
         // console.log(response);
@@ -60,6 +63,7 @@ const Login = () => {
         // setCargando(false);
       })
       .catch(err => {
+        setTokenUsuario(null);
         if(err.response) {
           if (err.response.status === 400) {
             dataAlerta.current = {msg: 'Datos incorrectos', severity: 'warning'};

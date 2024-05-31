@@ -49,6 +49,7 @@ public class ApplicationConfig {
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override public void addCorsMappings(@Nonnull org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
+
                 registry.addMapping("/**")
                         .allowedOrigins("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE");

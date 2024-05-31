@@ -22,45 +22,45 @@ const modeloEmpleado = {
 };
 
 const empleadosInicial = [
-  { id: 0, id_persona: 0, id_sucursal: 0, dni: '00000000', nombre_completo: 'Empleado 1', id_cargo: 0, nombre_cargo: 'Cargo 1', tipo: 'FIJO', fecha_inicio: '2021-01-01', salario: 3500000.00, estado: true },
+  // { id: 0, id_persona: 0, id_sucursal: 0, dni: '00000000', nombre_completo: 'Empleado 1', id_cargo: 0, nombre_cargo: 'Cargo 1', tipo: 'FIJO', fecha_inicio: '2021-01-01', salario: 3500000.00, estado: true },
 ];
 
 const cargosInicial = [
-  { value: 0, label: 'Cargo 1' },
-  { value: 1, label: 'Cargo 2' },
-  { value: 2, label: 'Cargo 3' },
-  { value: 3, label: 'Cargo 4' },
-  { value: 4, label: 'Cargo 5' },
-  { value: 5, label: 'Cargo 6' }
+  // { value: 0, label: 'Cargo 1' },
+  // { value: 1, label: 'Cargo 2' },
+  // { value: 2, label: 'Cargo 3' },
+  // { value: 3, label: 'Cargo 4' },
+  // { value: 4, label: 'Cargo 5' },
+  // { value: 5, label: 'Cargo 6' }
 ];
 
 const personasInicial = [
-  { value: 0, label: '1234567890' },
-  { value: 1, label: '1234567891' },
-  { value: 2, label: '1234567892' }
+  // { value: 0, label: '1234567890' },
+  // { value: 1, label: '1234567891' },
+  // { value: 2, label: '1234567892' }
 ];
 
 const sucursalesInicial = [
-  { id: 0, 'nombre': 'Sucursal 1' }, 
-  { id: 1, 'nombre': 'Sucursal 2' }, 
-  { id: 2, 'nombre': 'Sucursal 3' },
-  { id: 3, 'nombre': 'Sucursal 4' },
-  { id: 4, 'nombre': 'Sucursal 5' },
-  { id: 5, 'nombre': 'Sucursal 6' },
-  { id: 6, 'nombre': 'Sucursal 7' },
-  { id: 7, 'nombre': 'Sucursal 8' },
-  { id: 8, 'nombre': 'Sucursal 9' },
-  { id: 9, 'nombre': 'Sucursal 10' },
-  { id: 10, 'nombre': 'Sucursal 11' },
-  { id: 11, 'nombre': 'Sucursal 12' },
-  { id: 12, 'nombre': 'Sucursal 13' },
-  { id: 13, 'nombre': 'Sucursal 14' },
-  { id: 14, 'nombre': 'Sucursal 15' },
-  { id: 15, 'nombre': 'Sucursal 16' },
-  { id: 16, 'nombre': 'Sucursal 17' },
-  { id: 17, 'nombre': 'Sucursal 18' },
-  { id: 18, 'nombre': 'Sucursal 19' },
-  { id: 19, 'nombre': 'Sucursal 20' }
+  // { id: 0, 'nombre': 'Sucursal 1' }, 
+  // { id: 1, 'nombre': 'Sucursal 2' }, 
+  // { id: 2, 'nombre': 'Sucursal 3' },
+  // { id: 3, 'nombre': 'Sucursal 4' },
+  // { id: 4, 'nombre': 'Sucursal 5' },
+  // { id: 5, 'nombre': 'Sucursal 6' },
+  // { id: 6, 'nombre': 'Sucursal 7' },
+  // { id: 7, 'nombre': 'Sucursal 8' },
+  // { id: 8, 'nombre': 'Sucursal 9' },
+  // { id: 9, 'nombre': 'Sucursal 10' },
+  // { id: 10, 'nombre': 'Sucursal 11' },
+  // { id: 11, 'nombre': 'Sucursal 12' },
+  // { id: 12, 'nombre': 'Sucursal 13' },
+  // { id: 13, 'nombre': 'Sucursal 14' },
+  // { id: 14, 'nombre': 'Sucursal 15' },
+  // { id: 15, 'nombre': 'Sucursal 16' },
+  // { id: 16, 'nombre': 'Sucursal 17' },
+  // { id: 17, 'nombre': 'Sucursal 18' },
+  // { id: 18, 'nombre': 'Sucursal 19' },
+  // { id: 19, 'nombre': 'Sucursal 20' }
 ];
 
 const getPermisos = (usuario) => {
@@ -248,6 +248,7 @@ const Main = () => {
       const response = await fetchApi().get('/empleados');
       if (response?.data) {
         const { empleados: listaEmpleados } = response.data;
+        console.log(listaEmpleados)
         setEmpleados(
           listaEmpleados &&
           listaEmpleados
@@ -271,14 +272,13 @@ const Main = () => {
 
   const postEmpleado = async (empleado) => {
     const { id_persona, id_cargo, id_sucursal, tipo, fecha_inicio, salario } = empleado;
-
     try {
       const response = await fetchApi().post('/empleado', {
         id_persona, id_cargo, id_sucursal, tipo, fecha_inicio, salario
       });
       if (response?.data) {
         const { empleado: newEmpleado } = response.data;
-        setAlerta(alerta => ({...alerta, mensaje: `Empleado ${newEmpleado.titulo} creado exitosamente`, severity: 'success', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: `Empleado creado exitosamente`, severity: 'success', open: true}));
 
         return newEmpleado;
       }  else {

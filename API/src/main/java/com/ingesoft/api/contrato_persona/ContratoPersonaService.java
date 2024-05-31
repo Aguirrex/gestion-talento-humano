@@ -1,6 +1,7 @@
 package com.ingesoft.api.contrato_persona;
 
 import com.ingesoft.api.cargo.CargoRepository;
+import com.ingesoft.api.novedad_nomina.NovedadNomina;
 import com.ingesoft.api.persona.PersonaRepository;
 import com.ingesoft.api.salario.Salario;
 import com.ingesoft.api.salario.SalarioRepository;
@@ -9,10 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static java.lang.Integer.parseInt;
 
 @Service
 @RequiredArgsConstructor
@@ -26,16 +31,11 @@ public class ContratoPersonaService {
 
     public Map<String, Object> createEmpleado(Map<String, Object> request) {
 
-        var cargo = cargoRepository.findById(((Number) request.get("id_cargo")).intValue()).orElseThrow();
-        var persona = personaRepository.findById(((Number) request.get("id_persona")).longValue()).orElseThrow();
-        var sucursal = sucursalRepository.findById(((Number) request.get("id_sucursal")).intValue()).orElseThrow();
-        String fechaInicioString = request.get("fecha_inicio").toString();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // replace with the format of your date
-                                                                                 // // // // // string
-        LocalDate fechaInicio = LocalDate.parse(fechaInicioString, formatter);
-        Date fechaInicioDate = Date.from(fechaInicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        var cargo = cargoRepository.findById(parseInt(request.get("id_cargo").toString())).orElseThrow();
+        var persona = personaRepository.findById(Long.valueOf((Integer)(request.get("id_persona")))).orElseThrow();
+        var sucursal = sucursalRepository.findById(parseInt(request.get("id_sucursal").toString())).orElseThrow();
 
-        BigDecimal salarioValue = BigDecimal.valueOf(((Number) request.get("salario")).doubleValue());
+        BigDecimal salarioValue = BigDecimal.valueOf(Long.parseLong(request.get("salario").toString()));
         BigDecimal auxilio_transporte;
 
         if (salarioValue.compareTo(BigDecimal.valueOf(2600000)) <= 0) {
@@ -43,23 +43,29 @@ public class ContratoPersonaService {
         } else {
             auxilio_transporte = BigDecimal.ZERO;
         }
-        Salario salario = Salario.builder()
-                .salario(salarioValue)
-                .auxilio_transporte(auxilio_transporte)
-                .build();
 
         var empleado = ContratoPersona.builder()
-                .salario(salario)
+                .salario(null)
                 .persona(persona)
                 .cargo(cargo)
                 .sucursal(sucursal)
                 .tipo(Tipo.valueOf(request.get("tipo").toString()))
-                .fecha_inicio(fechaInicioDate)
+                .fecha_inicio(stringToDate((String) request.get("fecha_inicio")))
+                .fecha_fin(null)
                 .contratacion_mision_plus(false)
-                .estado(true)
+                .ultimo_pago_vacaciones(null)
+                .ultimo_pago_cesantias(null)
+                .estado(Boolean.TRUE)
                 .build();
 
-        salario.setContratoPersona(empleado);
+        Salario salario = Salario.builder()
+                .contratoPersona(empleado)
+                .salario(salarioValue)
+                .auxilio_transporte(auxilio_transporte)
+                .build();
+
+        salarioRepository.save(salario);
+        empleado.setSalario(salario);
         contratoPersonaRepository.save(empleado);
 
         Map<String, Object> responseMap = new HashMap<>();
@@ -67,6 +73,14 @@ public class ContratoPersonaService {
         responseMap.put("candidato", EmpleadoMap(empleado));
 
         return responseMap;
+    }
+
+    private Date stringToDate(String date){
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     public Map<String, Object> getEmpleados() {
@@ -160,10 +174,10 @@ public class ContratoPersonaService {
         empleadoMap.put("salario", empleado.getSalario().getSalario());
         empleadoMap.put("estado", empleado.getEstado());
 
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("message", "OK");
-        responseMap.put("empleado", empleadoMap);
+//        Map<String, Object> responseMap = new HashMap<>();
+//        responseMap.put("message", "OK");
+//        responseMap.put("empleado", empleadoMap);
 
-        return responseMap;
+        return empleadoMap;
     }
 }

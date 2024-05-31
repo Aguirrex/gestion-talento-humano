@@ -15,7 +15,7 @@ const modeloNomina = {
 };
 
 const nominasInicial = [
-  { id: 0, id_periodo_quincenal: 0, url_nomina_pdf: 'https://es.wikipedia.org/wiki/PDF', url_nomina_excel: 'https://es.wikipedia.org/wiki/Microsoft_Excel'},
+  { id: 0, id_periodo_quincenal: 0, url_nomina_excel: 'localhost:8080/files/nomina1.xlsx'},
 ];
 
 const periodosQuincenalesInicial = [
@@ -81,22 +81,22 @@ const Main = () => {
       type: 'singleSelect',
       valueOptions: periodosQuincenales
     },
-    {
-      field: 'url_nomina_pdf',
-      headerName: 'Nómina PDF',
-      width: 200,
-      editable: false,
-      renderCell: (params) => (
-        params?.value ? <Link href={params.value} target='_blank' rel='noopener'>PDF</Link> : null
-      )
-    },
+    // {
+    //   field: 'url_nomina_pdf',
+    //   headerName: 'Nómina PDF',
+    //   width: 200,
+    //   editable: false,
+    //   renderCell: (params) => (
+    //     params?.value ? <Link href={params.value} target='_blank' rel='noopener'>PDF</Link> : null
+    //   )
+    // },
     {
       field: 'url_nomina_excel',
       headerName: 'Nómina Excel',
       width: 200,
       editable: false,
       renderCell: (params) => (
-        params?.value ? <Link href={params.value} target='_blank' rel='noopener'>Excel</Link> : null
+        params?.value ? <Link download href={params.value}>Excel</Link> : null
       )
     },
   ];

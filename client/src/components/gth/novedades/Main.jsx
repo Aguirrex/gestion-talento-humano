@@ -15,27 +15,27 @@ const modeloNovedad = {
   tipo: tiposNovedad.HORAS_EXTRAS,
   cantidad: 0,
   valor: 0,
-  es_decuento: false,
+  es_descuento: false,
   detalles: ''
 };
 
 const novedadesInicial = [
-  { id: 1, id_contrato: 1, id_periodo_quincenal: 1, tipo: tiposNovedad.HORAS_EXTRAS, cantidad: 2, valor: 10000, es_decuento: false, detalles: 'Horas extras trabajadas' },
+  // { id: 1, id_contrato: 1, id_periodo_quincenal: 1, tipo: tiposNovedad.HORAS_EXTRAS, cantidad: 2, valor: 10000, es_descuento: false, detalles: 'Horas extras trabajadas' },
 ];
 
 const empleadosInicial = [
-  { value: 0, label: '123456789' },
-  { value: 1, label: '435543434' },
-  { value: 2, label: '716426341' },
+  // { value: 0, label: '123456789' },
+  // { value: 1, label: '435543434' },
+  // { value: 2, label: '716426341' },
 ];
 
 const periodosQuincenalesInicial = [
-  { value: 0, label: '1° Quin. Mayo 2024'},
-  { value: 1, label: '2° Quin. Mayo 2024'},
-  { value: 2, label: '1° Quin. Junio 2024'},
-  { value: 3, label: '2° Quin. Junio 2024'},
-  { value: 4, label: '1° Quin. Julio 2024'},
-  { value: 5, label: '2° Quin. Julio 2024'},
+  // { value: 0, label: '1° Quin. Mayo 2024'},
+  // { value: 1, label: '2° Quin. Mayo 2024'},
+  // { value: 2, label: '1° Quin. Junio 2024'},
+  // { value: 3, label: '2° Quin. Junio 2024'},
+  // { value: 4, label: '1° Quin. Julio 2024'},
+  // { value: 5, label: '2° Quin. Julio 2024'},
 ];
 
 const getPermisos = (usuario) => {
@@ -155,7 +155,7 @@ const Main = () => {
       valueFormatter: (value) => formatoMoneda.format(value)
     },
     {
-      field: 'es_decuento',
+      field: 'es_descuento',
       headerName: 'Es descuento',
       type: 'boolean',
       width: 150,
@@ -206,8 +206,9 @@ const Main = () => {
         id_contrato, id_periodo_quincenal, tipo, cantidad, valor, es_descuento, detalles
       });
       if (response?.data) {
+        console.log(response.data)
         const { novedad: newNovedad } = response.data;
-        setAlerta(alerta => ({...alerta, mensaje: `Novedad ${newNovedad.titulo} creada exitosamente`, severity: 'success', open: true}));
+        setAlerta(alerta => ({...alerta, mensaje: "Novedad creada exitosamente", severity: 'success', open: true}));
       }  else {
         setAlerta(alerta => ({...alerta, mensaje: 'Ocurrió algo inesperado al agregar la novedad', severity: 'error', open: true}));
         console.log(response);
@@ -326,7 +327,7 @@ const Main = () => {
     getEmpleados()
       .then(empleados => {
         console.log(empleados);
-        if (empleados) setEmpleados(empleados.map(empleado => ({value: empleado.id, label: empleado.nombre})));
+        if (empleados) setEmpleados(empleados.map(empleado => ({value: empleado.id, label: empleado.dni})));
       });
     getPeriodosQuincenales()
       .then(periodosQuincenales => {

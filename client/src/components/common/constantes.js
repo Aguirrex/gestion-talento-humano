@@ -20,7 +20,7 @@ const opcionesMenuLateral = [
     {icono: FiberNewIcon, texto: 'Novedades', ruta: '/gth/empleados/novedades'},
   ]},
   {icono: AttachMoneyIcon, texto: 'Nómina', usuarios: [tiposUsuario.RH, tiposUsuario.CONTABILIDAD, tiposUsuario.GERENCIA], ruta: '/gth/nomina'},
-  {icono: PersonOffIcon, texto: 'Liquidación', usuarios: [tiposUsuario.RH], ruta: '/gth/liquidacion'},
+  // {icono: PersonOffIcon, texto: 'Liquidación', usuarios: [tiposUsuario.RH], ruta: '/gth/liquidacion'},
 ];
 
 const opcionesValidasTabla = {
@@ -50,10 +50,10 @@ const tiposContrato = {
 
 const tiposNovedad = {
   RODAMIENTO: 'RODAMIENTO', 
-  FONDO: 'FONDO CRECER', 
+  FONDO: 'FONDO_CRECER', 
   COMISION: 'COMISIÓN', 
   BONIFICACION: 'BONIFICACIÓN', 
-  HORAS_EXTRAS: 'HORAS EXTRAS', 
+  HORAS_EXTRAS: 'HORAS_EXTRAS', 
   INCAPACIDAD: 'INCAPACIDAD', 
   PRIMA: 'PRIMA', 
   VACACIONES: 'VACACIONES', 
